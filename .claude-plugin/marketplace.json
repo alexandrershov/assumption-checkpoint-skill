@@ -1,0 +1,19 @@
+{
+  "name": "assumption-checkpoint",
+  "metadata": {
+    "description": "Claude Code plugins for evidence-first coding workflows."
+  },
+  "owner": {
+    "name": "alexandrershov"
+  },
+  "plugins": [
+    {
+      "name": "assumption-checkpoint",
+      "source": {
+        "source": "github",
+        "repo": "alexandrershov/assumption-checkpoint-skill"
+      },
+      "description": "Check coding assumptions against evidence before acting."
+    }
+  ]
+}

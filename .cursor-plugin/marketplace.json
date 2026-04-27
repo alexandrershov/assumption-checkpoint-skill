@@ -1,0 +1,16 @@
+{
+  "name": "assumption-checkpoint",
+  "owner": {
+    "name": "alexandrershov"
+  },
+  "metadata": {
+    "description": "Cursor plugins for evidence-first coding workflows."
+  },
+  "plugins": [
+    {
+      "name": "assumption-checkpoint",
+      "source": "cursor-plugin",
+      "description": "Check coding assumptions against evidence before acting."
+    }
+  ]
+}

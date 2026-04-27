@@ -1,0 +1,27 @@
+{
+  "name": "assumption-checkpoint",
+  "displayName": "Assumption Checkpoint",
+  "version": "0.0.1",
+  "description": "Check coding assumptions against evidence before diagnosing, editing, reviewing, or calling work complete.",
+  "author": {
+    "name": "alexandrershov"
+  },
+  "homepage": "https://github.com/alexandrershov/assumption-checkpoint-skill",
+  "repository": "https://github.com/alexandrershov/assumption-checkpoint-skill",
+  "license": "ISC",
+  "logo": "assets/logo.png",
+  "keywords": [
+    "agent-skills",
+    "code-review",
+    "debugging",
+    "verification"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "skills",
+    "workflow",
+    "debugging"
+  ],
+  "skills": "./skills/",
+  "rules": "./rules/"
+}

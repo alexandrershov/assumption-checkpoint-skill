@@ -1,0 +1,19 @@
+---
+description: Use Assumption Checkpoint when diagnosing bugs, changing code, reviewing code, explaining unfamiliar code, or making implementation decisions.
+alwaysApply: false
+---
+
+Use the Assumption Checkpoint workflow before confident claims or code edits:
+
+```text
+Assumption:
+Evidence checked:
+Remaining risk:
+Next verification:
+```
+
+Pause before stating a root cause, before editing code based on a mental model, and before calling a change complete.
+
+Prefer concrete evidence from tests, logs, stack traces, compiler output, direct caller/callee reads, fixtures, docs, git history, or UI observations. If the conclusion relies only on naming, local shape, or vibes, inspect one more independent source before acting.
+
+Keep edits scoped to what the evidence supports. Decide verification before implementation. Do not claim work is fixed or complete unless verification was actually run, or clearly state what was not verified.

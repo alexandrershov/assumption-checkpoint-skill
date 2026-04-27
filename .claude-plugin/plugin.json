@@ -1,0 +1,8 @@
+{
+  "name": "assumption-checkpoint",
+  "description": "Check coding assumptions against evidence before diagnosing, editing, reviewing, or calling work complete.",
+  "version": "0.0.1",
+  "author": {
+    "name": "alexandrershov"
+  }
+}
