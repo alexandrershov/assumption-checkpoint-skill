@@ -21,16 +21,21 @@ Each checkpoint answers:
 ```text
 Assumption:
 Evidence checked:
+Theory strength: Strong enough / Weak / Contradicted / Unresolved
 Remaining risk:
 Next verification:
 ```
 
-For low-risk mechanical edits, it can use a shorter form: assumption plus verification).
+For low-risk mechanical edits, it can use a shorter form: assumption plus verification.
+
+The skill classifies each theory as strong enough, weak, contradicted, or unresolved before editing. Weak or unresolved theories require one more independent check, a clean-context evidence audit when subagents are available, or a user decision when the missing evidence is about intended behavior or scope.
 
 ## What It Helps With
 
 - Separates facts from guesses before code changes.
 - Forces evidence from tests, logs, stack traces, callers, callees, docs, or git history.
+- Classifies theory strength before edits instead of treating evidence as a vague note.
+- Escalates risky or ambiguous theories to independent evidence audit when local checking is not enough.
 - Keeps edits scoped to what the evidence supports.
 - Defines verification before implementation.
 - Prevents “looks fixed” claims when tests or checks were not actually run.

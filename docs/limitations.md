@@ -10,6 +10,7 @@ Possible issues:
 - It cannot replace reproduction, failing tests, review evidence, or final verification.
 - It may slow exploration when the codebase has poor tests or unclear ownership.
 - It can still miss hidden coupling if the inspected source is too narrow.
+- Independent evidence audits can reduce confirmation bias, but they still depend on the quality of the context and artifacts given to the subagent.
 
 The main failure mode is treating the checkpoint as documentation instead of a decision point. A good checkpoint should change or confirm the next action: what to inspect, what to edit, what to leave alone, or how to verify.
 

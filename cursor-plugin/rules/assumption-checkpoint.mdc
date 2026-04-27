@@ -8,6 +8,7 @@ Use the Assumption Checkpoint workflow before confident claims or code edits:
 ```text
 Assumption:
 Evidence checked:
+Theory strength: Strong enough / Weak / Contradicted / Unresolved
 Remaining risk:
 Next verification:
 ```
@@ -15,5 +16,9 @@ Next verification:
 Pause before stating a root cause, before editing code based on a mental model, and before calling a change complete.
 
 Prefer concrete evidence from tests, logs, stack traces, compiler output, direct caller/callee reads, fixtures, docs, git history, or UI observations. If the conclusion relies only on naming, local shape, or vibes, inspect one more independent source before acting.
+
+Before editing, classify the theory. It is strong enough with one strong signal or two independent weaker signals and no unresolved alternative that would change the edit. If it is weak, contradicted, or unresolved, do not edit yet.
+
+For risky or ambiguous theories, use an independent evidence audit when subagents are available: give a clean-context subagent only the symptom, available failing evidence, relevant files or commands, and the theory to challenge. The subagent should look for supporting evidence, contradicting evidence, missing evidence, and the next check; it should not implement the fix. If subagents are not available, inspect one more independent source or ask the user when the missing evidence is not locally discoverable.
 
 Keep edits scoped to what the evidence supports. Decide verification before implementation. Do not claim work is fixed or complete unless verification was actually run, or clearly state what was not verified.
