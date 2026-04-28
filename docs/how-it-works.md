@@ -31,6 +31,8 @@ The workflow is:
 
 For mechanical edits that cannot change runtime behavior, the skill allows a shorter checkpoint: assumption plus verification.
 
+Checkpoint visibility is intentional. The checkpoint is primarily an internal agent discipline, not a transcript format. The agent should surface a full checkpoint only when it affects trust, risk, scope, expectations, verification limits, or a user decision. Low-risk mechanical work usually needs only a short working update.
+
 The skill supports three checkpoint levels:
 
 - `assumption-checkpoint:low` uses the compressed checkpoint only for low-risk mechanical edits that cannot change runtime behavior.
@@ -48,3 +50,19 @@ If evidence is weak or unresolved, the agent must not edit yet. It should check 
 When `high` mode requests an independent evidence audit, the agent includes the high checkpoint fields when available. The clean-context subagent should test both the expected confirming and expected contradicting signals, look for alternative theories, and return a verdict without implementing the fix.
 
 If two rounds of evidence still leave multiple plausible theories and the edit direction would change, the skill tells the agent to stop instead of guessing.
+
+## Checkpoint Quality
+
+A poor checkpoint is vague and does not justify the next action:
+
+```text
+Evidence checked: Code.
+Next verification: Run tests.
+```
+
+A useful checkpoint names concrete sources and verification:
+
+```text
+Evidence checked: Failing test `parser.test.ts`, caller `loadItems()`, callee `parseItems()`.
+Next verification: Run `npm test -- parser.test.ts`, then the import flow test if parser behavior changes.
+```

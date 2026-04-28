@@ -28,6 +28,8 @@ Next verification:
 
 For low-risk mechanical edits, it can use a shorter form: assumption plus verification.
 
+The checkpoint is primarily an internal agent discipline, not a transcript format. The agent should surface full checkpoints only when they affect trust, risk, scope, expectations, verification limits, or a user decision.
+
 The skill classifies each theory as strong enough, weak, contradicted, or unresolved before editing. Weak or unresolved theories require one more independent check, a clean-context evidence audit when subagents are available, or a user decision when the missing evidence is about intended behavior or scope.
 
 The workflow also supports explicit checkpoint levels:
@@ -51,6 +53,7 @@ When `high` uses an independent evidence audit, the agent passes the high checkp
 - Keeps edits scoped to what the evidence supports.
 - Defines verification before implementation.
 - Prevents “looks fixed” claims when tests or checks were not actually run.
+- Reduces performative checkpoints by requiring concrete sources and useful next verification.
 
 ## Mini Docs
 

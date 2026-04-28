@@ -1,3 +1,12 @@
+# Release 0.0.4 - 2026-04-28
+
+## Changes
+
+- Added checkpoint visibility guidance: checkpoints are primarily internal agent discipline and should be surfaced only when they affect trust, risk, scope, expectations, verification limits, or a user decision.
+- Added concrete good/bad checkpoint examples to reduce vague or performative usage.
+- Updated README, how-it-works docs, Cursor rules, and bundled skill copies with the new visibility and checkpoint-quality guidance.
+- Bumped package, Gemini extension, Claude plugin, and Cursor plugin metadata to `0.0.4`.
+
 # Release 0.0.3 - 2026-04-28
 
 ## Changes

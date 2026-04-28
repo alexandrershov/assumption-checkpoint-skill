@@ -27,6 +27,24 @@ Pause at these points:
 
 At each pause, write a short checkpoint in working notes or the user update. Use the checkpoint level rules below to choose the format.
 
+## Checkpoint Visibility
+
+Assumption Checkpoint is primarily a discipline for the agent, not a transcript format for the user.
+
+Prefer internal checkpoints when they only guide your own next action. Surface the checkpoint to the user when it affects trust, risk, scope, expectations, or a decision the user may need to make.
+
+Surface a checkpoint when:
+
+- the checkpoint level is `high`;
+- the theory is Weak, Contradicted, or Unresolved;
+- the missing evidence is about intended behavior, product requirements, or acceptable scope;
+- verification cannot be run or would leave important residual risk;
+- the next action changes because of the evidence checked.
+
+Do not surface a full checkpoint for low-risk mechanical work when the evidence and verification are obvious. A short working update is enough.
+
+Even when a checkpoint is internal, keep it concrete enough to change or confirm the next action.
+
 ## Checkpoint Levels
 
 Assumption Checkpoint supports three strictness levels:
@@ -145,6 +163,56 @@ A theory is weak or unresolved when:
 - the next verification is vague.
 
 If evidence cannot be classified as Strong enough, Weak, or Contradicted, treat it as Unresolved. Do not edit yet.
+
+## Checkpoint Quality Examples
+
+Bad checkpoints are vague and do not justify the next action:
+
+```text
+Assumption: The parser is broken.
+Evidence checked: Code.
+Theory strength: Strong enough.
+Remaining risk: Low.
+Next verification: Run tests.
+```
+
+Good checkpoints name concrete sources, scope, and verification:
+
+```text
+Assumption: Empty input reaches parseItems() without normalization.
+Evidence checked: Failing test `parser.test.ts`, caller `loadItems()`, callee `parseItems()`.
+Theory strength: Strong enough.
+Remaining risk: Shared parser behavior may affect import and preview flows.
+Next verification: Run `npm test -- parser.test.ts`, then the import flow test if parser behavior changes.
+```
+
+Bad high checkpoints only add labels:
+
+```text
+Assumption: The cache is stale.
+Expected confirming signal: It is stale.
+Expected contradicting signal: It is not stale.
+Evidence checked: Cache file.
+Theory strength: Strong enough.
+Alternative theories: None.
+Blast radius: Cache.
+Remaining risk: Low.
+Next verification: Test it.
+```
+
+Good high checkpoints name signals that can actually be checked:
+
+```text
+Assumption: The dashboard shows stale counts because refreshUserStats() does not invalidate the user-stats cache key.
+Expected confirming signal: The mutation completes, but no invalidation call references `user-stats`.
+Expected contradicting signal: A caller invalidates `user-stats` after the mutation or the query key differs from the assumed key.
+Evidence checked: Mutation `saveUser()`, caller `UserSettingsForm`, query key in `useUserStats()`.
+Theory strength: Strong enough.
+Alternative theories: Backend returns cached data; UI subscribes to a different user id.
+Blast radius: User settings save flow and dashboard stats refresh.
+Remaining risk: Backend caching not checked.
+Next verification: Add/adjust invalidation, then run the user settings test and manually confirm dashboard refresh if no test exists.
+```
 
 ## Evidence Ladder
 

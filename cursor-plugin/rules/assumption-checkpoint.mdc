@@ -5,6 +5,8 @@ alwaysApply: false
 
 Use the Assumption Checkpoint workflow before confident claims or code edits:
 
+Treat checkpoints primarily as agent discipline, not as a transcript format. Surface a full checkpoint to the user when it affects trust, risk, scope, expectations, verification limits, or a user decision. For low-risk mechanical work, a short working update is enough.
+
 Use `assumption-checkpoint:normal` by default. Treat a user-selected level as the minimum strictness level. Do not downgrade it. Escalate to `high` when risk, ambiguity, weak evidence, unresolved alternatives, shared/runtime behavior, or user request makes deeper checking useful.
 
 Use `low` only for low-risk mechanical edits that cannot change runtime behavior:
@@ -41,6 +43,8 @@ Next verification:
 Pause before stating a root cause, before editing code based on a mental model, and before calling a change complete.
 
 Prefer concrete evidence from tests, logs, stack traces, compiler output, direct caller/callee reads, fixtures, docs, git history, or UI observations. If the conclusion relies only on naming, local shape, or vibes, inspect one more independent source before acting.
+
+Avoid vague checkpoints like `Evidence checked: code` or `Next verification: run tests`. Name concrete files, commands, callers, callees, tests, logs, or UI observations, and choose verification specific enough to prove the next edit.
 
 Before editing, classify the theory. It is strong enough with one strong signal or two independent weaker signals and no unresolved alternative that would change the edit. A theory is not strong enough merely because supporting evidence exists; for non-mechanical or behavior-changing work, also consider what evidence would contradict it. If it is weak, contradicted, or unresolved, do not edit yet.
 
