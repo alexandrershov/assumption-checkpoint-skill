@@ -12,9 +12,12 @@ Possible issues:
 - It may slow exploration when the codebase has poor tests or unclear ownership.
 - It can still miss hidden coupling if the inspected source is too narrow.
 - Independent evidence audits can reduce confirmation bias, but they still depend on the quality of the context and artifacts given to the subagent.
+- High-mode audits are only useful when the prompt gives the subagent concrete confirming and contradicting signals to test.
 
 The main failure mode is treating the checkpoint as documentation instead of a decision point. A good checkpoint should change or confirm the next action: what to inspect, what to edit, what to leave alone, or how to verify.
 
 For best results, keep checkpoints short and concrete. Use one strong signal or two independent weaker signals before moving forward.
 
 Use `low` only when the edit cannot change runtime behavior. Use `high` for meaningful risk or ambiguity, but remember that a high checkpoint does not make weak evidence strong by itself.
+
+Likewise, a high-mode audit does not bypass the Theory Strength Gate. A weakened, contradicted, or unresolved audit verdict still requires revising the theory or checking more evidence before editing.

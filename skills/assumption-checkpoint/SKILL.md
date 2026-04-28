@@ -206,6 +206,26 @@ Recommended next check:
 Verdict: supported / weakened / contradicted / unresolved
 ```
 
+When requesting an Independent Evidence Audit from `high` mode, include the high checkpoint fields when available: the assumption, expected confirming signal, expected contradicting signal, evidence checked so far, alternative theories if known, blast radius, and the edit direction being considered.
+
+The audit should independently test both the expected confirming and expected contradicting signals, and look for alternative theories that would change the edit direction.
+
+For high-mode audits, use this expanded output when helpful:
+
+```text
+Theory to audit:
+Confirming signal checked:
+Contradicting signal checked:
+Supporting evidence:
+Contradicting evidence:
+Alternative theory:
+Missing evidence:
+Recommended next check:
+Verdict: supported / weakened / contradicted / unresolved
+```
+
+The audit result does not bypass the Theory Strength Gate. If the verdict is weakened, contradicted, or unresolved, do not edit until the theory is revised or more evidence is checked.
+
 ## Working Pattern
 
 1. Restate the task as an observable outcome.

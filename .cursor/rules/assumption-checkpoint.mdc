@@ -46,6 +46,8 @@ Before editing, classify the theory. It is strong enough with one strong signal 
 
 For risky or ambiguous theories, use an independent evidence audit when subagents are available: give a clean-context subagent only the symptom, available failing evidence, relevant files or commands, and the theory to challenge. The subagent should look for supporting evidence, contradicting evidence, missing evidence, and the next check; it should not implement the fix. If subagents are not available, inspect one more independent source or ask the user when the missing evidence is not locally discoverable.
 
+When requesting an independent evidence audit from `high` mode, include the high checkpoint fields when available: the assumption, expected confirming signal, expected contradicting signal, evidence checked so far, alternative theories if known, blast radius, and the edit direction being considered. The audit should independently test both signals and look for alternative theories that would change the edit direction. The audit result does not bypass the theory strength gate.
+
 Checkpoint level controls how detailed the checkpoint is. It does not replace the theory strength gate, escalation rule, or independent evidence audit.
 
 Keep edits scoped to what the evidence supports. Decide verification before implementation. Do not claim work is fixed or complete unless verification was actually run, or clearly state what was not verified.

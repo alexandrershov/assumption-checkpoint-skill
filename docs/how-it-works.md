@@ -45,4 +45,6 @@ For non-mechanical or behavior-changing work, supporting evidence is not enough 
 
 If evidence is weak or unresolved, the agent must not edit yet. It should check one more independent source, ask for an independent evidence audit when subagents are available, or ask the user when the missing evidence is about intended behavior or scope.
 
+When `high` mode requests an independent evidence audit, the agent includes the high checkpoint fields when available. The clean-context subagent should test both the expected confirming and expected contradicting signals, look for alternative theories, and return a verdict without implementing the fix.
+
 If two rounds of evidence still leave multiple plausible theories and the edit direction would change, the skill tells the agent to stop instead of guessing.

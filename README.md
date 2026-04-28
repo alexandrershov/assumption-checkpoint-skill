@@ -38,12 +38,15 @@ The workflow also supports explicit checkpoint levels:
 
 User-selected levels are treated as the minimum strictness level. The agent may escalate to `high`, but must not downgrade.
 
+When `high` uses an independent evidence audit, the agent passes the high checkpoint fields to a clean-context subagent so it can test both the confirming and contradicting signals and look for alternative theories. The audit does not bypass the theory strength gate.
+
 ## What It Helps With
 
 - Separates facts from guesses before code changes.
 - Forces evidence from tests, logs, stack traces, callers, callees, docs, or git history.
 - Classifies theory strength before edits instead of treating evidence as a vague note.
 - Names what would confirm and what would contradict high-risk theories.
+- Lets clean-context audits challenge high-risk theories using the same confirming and contradicting signals.
 - Escalates risky or ambiguous theories to independent evidence audit when local checking is not enough.
 - Keeps edits scoped to what the evidence supports.
 - Defines verification before implementation.
