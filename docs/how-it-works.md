@@ -31,7 +31,17 @@ The workflow is:
 
 For mechanical edits that cannot change runtime behavior, the skill allows a shorter checkpoint: assumption plus verification.
 
+The skill supports three checkpoint levels:
+
+- `assumption-checkpoint:low` uses the compressed checkpoint only for low-risk mechanical edits that cannot change runtime behavior.
+- `assumption-checkpoint:normal` is the default standard checkpoint for ordinary debugging, code changes, reviews, explanations, and implementation decisions.
+- `assumption-checkpoint:high` adds expected confirming and contradicting signals, alternative theories, and blast radius for ambiguous, shared, high-risk, or behavior-changing work.
+
+If the user specifies a level, that level is the minimum strictness. The agent must not downgrade it, but may escalate to `high` when risk, ambiguity, weak evidence, unresolved alternatives, shared/runtime behavior, or user request makes deeper checking useful.
+
 A theory is strong enough when it has one strong signal, such as a failing test, log, stack trace, compiler output, or runtime observation, or two independent weaker signals, such as a caller/callee read plus an existing fixture or doc.
+
+For non-mechanical or behavior-changing work, supporting evidence is not enough by itself. A useful theory should also name what evidence would contradict it; if no concrete contradicting signal can be named, treat the theory as weak or unresolved.
 
 If evidence is weak or unresolved, the agent must not edit yet. It should check one more independent source, ask for an independent evidence audit when subagents are available, or ask the user when the missing evidence is about intended behavior or scope.
 

@@ -5,9 +5,35 @@ alwaysApply: false
 
 Use the Assumption Checkpoint workflow before confident claims or code edits:
 
+Use `assumption-checkpoint:normal` by default. Treat a user-selected level as the minimum strictness level. Do not downgrade it. Escalate to `high` when risk, ambiguity, weak evidence, unresolved alternatives, shared/runtime behavior, or user request makes deeper checking useful.
+
+Use `low` only for low-risk mechanical edits that cannot change runtime behavior:
+
+```text
+Assumption:
+Verification:
+```
+
+Use `normal` for ordinary debugging, code changes, reviews, explanations, and implementation decisions:
+
 ```text
 Assumption:
 Evidence checked:
+Theory strength: Strong enough / Weak / Contradicted / Unresolved
+Remaining risk:
+Next verification:
+```
+
+Use `high` when the cost of a wrong theory is meaningful, the behavior is shared, the evidence is weak or ambiguous, or multiple plausible theories would lead to different edits:
+
+```text
+Assumption:
+Expected confirming signal:
+Expected contradicting signal:
+Evidence checked:
+Theory strength: Strong enough / Weak / Contradicted / Unresolved
+Alternative theories:
+Blast radius:
 Remaining risk:
 Next verification:
 ```
@@ -15,5 +41,11 @@ Next verification:
 Pause before stating a root cause, before editing code based on a mental model, and before calling a change complete.
 
 Prefer concrete evidence from tests, logs, stack traces, compiler output, direct caller/callee reads, fixtures, docs, git history, or UI observations. If the conclusion relies only on naming, local shape, or vibes, inspect one more independent source before acting.
+
+Before editing, classify the theory. It is strong enough with one strong signal or two independent weaker signals and no unresolved alternative that would change the edit. A theory is not strong enough merely because supporting evidence exists; for non-mechanical or behavior-changing work, also consider what evidence would contradict it. If it is weak, contradicted, or unresolved, do not edit yet.
+
+For risky or ambiguous theories, use an independent evidence audit when subagents are available: give a clean-context subagent only the symptom, available failing evidence, relevant files or commands, and the theory to challenge. The subagent should look for supporting evidence, contradicting evidence, missing evidence, and the next check; it should not implement the fix. If subagents are not available, inspect one more independent source or ask the user when the missing evidence is not locally discoverable.
+
+Checkpoint level controls how detailed the checkpoint is. It does not replace the theory strength gate, escalation rule, or independent evidence audit.
 
 Keep edits scoped to what the evidence supports. Decide verification before implementation. Do not claim work is fixed or complete unless verification was actually run, or clearly state what was not verified.

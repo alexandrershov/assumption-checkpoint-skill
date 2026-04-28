@@ -1,3 +1,20 @@
+# Release 0.0.3 - 2026-04-28
+
+## Changes
+
+- Added checkpoint levels:
+  - `assumption-checkpoint:low`
+  - `assumption-checkpoint:normal`
+  - `assumption-checkpoint:high`
+- Defined `normal` as the default level.
+- Defined user-selected levels as the minimum strictness level.
+- Clarified that the agent must not downgrade a selected level, but may escalate to `high` when risk, ambiguity, weak evidence, unresolved alternatives, shared/runtime behavior, or user request requires deeper checking.
+- Limited `low` to low-risk mechanical edits that cannot change runtime behavior.
+- Added a high checkpoint format with expected confirming signal, expected contradicting signal, alternative theories, and blast radius.
+- Clarified that checkpoint levels do not replace the Theory Strength Gate, Escalation Rule, or Independent Evidence Audit.
+- Added a theory-strength rule that supporting evidence alone is not enough for non-mechanical or behavior-changing work; the agent should also consider what evidence would contradict the theory.
+- Updated README, how-it-works docs, limitations docs, and Cursor rules to describe levels.
+
 # Release 0.0.2 - 2026-04-27
 
 ## Changes

@@ -30,11 +30,20 @@ For low-risk mechanical edits, it can use a shorter form: assumption plus verifi
 
 The skill classifies each theory as strong enough, weak, contradicted, or unresolved before editing. Weak or unresolved theories require one more independent check, a clean-context evidence audit when subagents are available, or a user decision when the missing evidence is about intended behavior or scope.
 
+The workflow also supports explicit checkpoint levels:
+
+- `assumption-checkpoint:low` for low-risk mechanical edits that cannot change runtime behavior;
+- `assumption-checkpoint:normal` as the default for ordinary debugging, code changes, reviews, explanations, and implementation decisions;
+- `assumption-checkpoint:high` for ambiguous, shared, high-risk, or behavior-changing work where the theory should name both confirming and contradicting signals before action.
+
+User-selected levels are treated as the minimum strictness level. The agent may escalate to `high`, but must not downgrade.
+
 ## What It Helps With
 
 - Separates facts from guesses before code changes.
 - Forces evidence from tests, logs, stack traces, callers, callees, docs, or git history.
 - Classifies theory strength before edits instead of treating evidence as a vague note.
+- Names what would confirm and what would contradict high-risk theories.
 - Escalates risky or ambiguous theories to independent evidence audit when local checking is not enough.
 - Keeps edits scoped to what the evidence supports.
 - Defines verification before implementation.

@@ -25,7 +25,50 @@ Pause at these points:
 2. Before editing code based on a mental model.
 3. Before calling a change complete.
 
-At each pause, write a short checkpoint in working notes or the user update:
+At each pause, write a short checkpoint in working notes or the user update. Use the checkpoint level rules below to choose the format.
+
+## Checkpoint Levels
+
+Assumption Checkpoint supports three strictness levels:
+
+- `assumption-checkpoint:low`
+- `assumption-checkpoint:normal`
+- `assumption-checkpoint:high`
+
+If the user specifies a level, treat it as the minimum strictness level. If no level is specified, use `normal`.
+
+The agent must not downgrade the level. It may escalate to `high` when risk, ambiguity, weak evidence, unresolved alternatives, shared/runtime behavior, or user request makes deeper checking useful.
+
+Escalating the checkpoint level does not resolve weak or unresolved evidence by itself. The theory must still satisfy the Theory Strength Gate before editing or declaring completion.
+
+Checkpoint level controls how detailed the checkpoint is. The Escalation Rule controls when the agent must stop choosing an edit direction. Independent Evidence Audit is one possible escalation tool. These rules do not replace each other.
+
+### Low
+
+Use `low` only for low-risk mechanical edits that cannot change runtime behavior.
+
+Examples:
+
+- fixing typos;
+- updating comments or documentation;
+- renaming text labels without behavior changes;
+- synchronizing package metadata;
+- formatting-only changes.
+
+Use this compressed checkpoint:
+
+```text
+Assumption:
+Verification:
+```
+
+Do not use `low` for behavior-changing edits, debugging, root-cause claims, shared code, persistence, cache, auth, async behavior, migrations, API contracts, or test logic.
+
+### Normal
+
+Use `normal` as the default mode for ordinary debugging, code changes, reviews, explanations, and implementation decisions.
+
+Use the standard checkpoint:
 
 ```text
 Assumption:
@@ -35,13 +78,47 @@ Remaining risk:
 Next verification:
 ```
 
+Before editing, the theory must be `Strong enough`.
+
+### High
+
+Use `high` when the cost of a wrong theory is meaningful, the behavior is shared, the evidence is weak or ambiguous, or multiple plausible theories would lead to different edits.
+
+Use `high` when the task involves:
+
+- auth, permissions, security, or privacy;
+- persistence, migrations, data loss, or schema changes;
+- cache invalidation or distributed state;
+- async flow, concurrency, retries, queues, or background jobs;
+- API contracts or external integrations;
+- flaky, intermittent, or hard-to-reproduce bugs;
+- broad refactors or shared abstractions;
+- production incidents or user-visible regressions;
+- any user request for deeper analysis.
+
+Use the high checkpoint:
+
+```text
+Assumption:
+Expected confirming signal:
+Expected contradicting signal:
+Evidence checked:
+Theory strength: Strong enough / Weak / Contradicted / Unresolved
+Alternative theories:
+Blast radius:
+Remaining risk:
+Next verification:
+```
+
+A high checkpoint must name at least one concrete signal that would support the theory and one concrete signal that would contradict it.
+
+If the contradicting signal is found, revise or drop the theory before editing.
+
+If alternative theories remain plausible and would change the edit direction, follow the Escalation Rule instead of guessing.
+
 Keep it brief. The goal is not ceremony; the goal is to stop invisible guesses from becoming implementation.
 
 A checkpoint must change or confirm the next action. If it does not identify evidence to check, scope to limit, or verification to run, it is too vague.
-
-For low-risk mechanical edits, use a compressed checkpoint: assumption plus verification only.
-
-Only use compressed checkpoints when the edit cannot change runtime behavior.
 
 ## Theory Strength Gate
 
@@ -55,6 +132,8 @@ After each checkpoint, classify the current theory before editing:
 | Unresolved | The evidence cannot be honestly classified. | Treat as not ready to edit. Resolve locally, audit independently, or ask the user. |
 
 A theory is strong enough when it has one strong signal or two independent weaker signals, and no unresolved alternative would change the edit direction.
+
+A theory is not `Strong enough` merely because supporting evidence exists. For non-mechanical or behavior-changing work, also consider what evidence would contradict the theory. If no concrete contradicting signal can be named, treat the theory as `Weak` or `Unresolved`.
 
 A theory is weak or unresolved when:
 
