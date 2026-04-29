@@ -21,13 +21,16 @@ The evidence should point to a concrete source: a failing test, log, stack trace
 The workflow is:
 
 1. Restate the task as an observable outcome.
-2. Name the assumption that could be wrong.
-3. Check the nearest reliable source of truth.
-4. Classify the theory as strong enough, weak, contradicted, or unresolved.
-5. Identify the possible blast radius.
-6. Limit the edit scope to what the evidence supports.
-7. Make the smallest justified change.
-8. Verify with the narrowest meaningful check first.
+2. Lock the user-visible outcome before narrowing the theory. For multi-part requests, split the outcome into observable invariants.
+3. Name the assumption that could be wrong.
+4. Check the nearest reliable source of truth.
+5. Classify the theory as strong enough, weak, contradicted, or unresolved.
+6. Identify the possible blast radius.
+7. Limit the edit scope to what the evidence supports.
+8. Make the smallest justified change.
+9. Verify with the narrowest meaningful check first.
+
+Outcome invariants describe visible or testable behavior, not implementation. A narrowed theory may explain one invariant, but it must not replace the full outcome. Before completion, each locked invariant should be verified, deferred, or explicitly called out as unverified.
 
 For mechanical edits that cannot change runtime behavior, the skill allows a shorter checkpoint: assumption plus verification.
 
@@ -42,6 +45,8 @@ The skill supports three checkpoint levels:
 If the user specifies a level, that level is the minimum strictness. The agent must not downgrade it, but may escalate to `high` when risk, ambiguity, weak evidence, unresolved alternatives, shared/runtime behavior, or user request makes deeper checking useful.
 
 A theory is strong enough when it has one strong signal, such as a failing test, log, stack trace, compiler output, or runtime observation, or two independent weaker signals, such as a caller/callee read plus an existing fixture or doc.
+
+A theory can be strong enough only for the outcome invariant it explains. If other locked invariants remain unexplained, the task is not fully diagnosed yet.
 
 For non-mechanical or behavior-changing work, supporting evidence is not enough by itself. A useful theory should also name what evidence would contradict it; if no concrete contradicting signal can be named, treat the theory as weak or unresolved.
 

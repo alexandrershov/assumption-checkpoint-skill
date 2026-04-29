@@ -1,3 +1,12 @@
+# Release 0.0.5 - 2026-04-29
+
+## Changes
+
+- Added Outcome Lock guidance: lock the full user-visible outcome before narrowing a theory.
+- Added outcome invariants for multi-part requests so narrowed theories stay tied to the complete user request.
+- Clarified that a theory can be strong enough only for the invariant it explains.
+- Strengthened completion guidance: verify each locked invariant or explicitly state what remains unverified, especially for visual layout work where static checks are not proof.
+
 # Release 0.0.4 - 2026-04-28
 
 ## Changes

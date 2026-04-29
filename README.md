@@ -32,6 +32,8 @@ The checkpoint is primarily an internal agent discipline, not a transcript forma
 
 The skill classifies each theory as strong enough, weak, contradicted, or unresolved before editing. Weak or unresolved theories require one more independent check, a clean-context evidence audit when subagents are available, or a user decision when the missing evidence is about intended behavior or scope.
 
+Before narrowing a theory, the agent locks the user-visible outcome. Multi-part requests are split into observable invariants so a theory can explain one part of the task without quietly replacing the whole task.
+
 The workflow also supports explicit checkpoint levels:
 
 - `assumption-checkpoint:low` for low-risk mechanical edits that cannot change runtime behavior;
@@ -51,6 +53,7 @@ When `high` uses an independent evidence audit, the agent passes the high checkp
 - Lets clean-context audits challenge high-risk theories using the same confirming and contradicting signals.
 - Escalates risky or ambiguous theories to independent evidence audit when local checking is not enough.
 - Keeps edits scoped to what the evidence supports.
+- Keeps narrowed theories tied to the full user-visible outcome.
 - Defines verification before implementation.
 - Prevents “looks fixed” claims when tests or checks were not actually run.
 - Reduces performative checkpoints by requiring concrete sources and useful next verification.

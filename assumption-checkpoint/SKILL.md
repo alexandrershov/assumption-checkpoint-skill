@@ -297,13 +297,21 @@ The audit result does not bypass the Theory Strength Gate. If the verdict is wea
 ## Working Pattern
 
 1. Restate the task as an observable outcome.
-2. Identify the most likely assumption that could be wrong.
-3. Inspect the nearest source of truth: tests, caller, callee, schema, logs, UI, or runtime output.
-4. List the blast radius: state, cache, persistence, network/API contract, async behavior, UI expectations, migrations, tests.
-5. Classify theory strength and resolve Weak, Contradicted, or Unresolved before editing.
-6. Name the intended edit scope: files/modules to touch and files/modules deliberately left alone.
-7. Make the smallest change that fits the evidence.
-8. Verify with the narrowest meaningful command first; broaden if the change touches shared behavior.
+2. Lock the user-visible outcome before narrowing the theory. For multi-part requests, split the outcome into observable invariants. A narrowed theory may explain one invariant, but it must not replace the full outcome.
+3. Identify the most likely assumption that could be wrong.
+4. Inspect the nearest source of truth: tests, caller, callee, schema, logs, UI, or runtime output.
+5. List the blast radius: state, cache, persistence, network/API contract, async behavior, UI expectations, migrations, tests.
+6. Classify theory strength and resolve Weak, Contradicted, or Unresolved before editing.
+7. Name the intended edit scope: files/modules to touch and files/modules deliberately left alone.
+8. Make the smallest change that fits the evidence.
+9. Verify with the narrowest meaningful command first; broaden if the change touches shared behavior.
+
+Outcome invariants describe visible or testable behavior, not the intended implementation. Keep them concrete enough to verify.
+
+Good invariant: sibling inputs keep the same top position when one field shows validation text.
+Bad invariant: layout looks correct.
+
+When using a narrowed theory, include a quick coverage check: which locked invariant does this theory explain, and which invariant remains unexplained, deferred, or out of scope? A theory can be `Strong enough` only for the invariant it explains. Do not treat the whole task as diagnosed unless every locked invariant is explained, deferred, or explicitly out of scope.
 
 For bugs, do not patch until there is at least one reproducible signal or a clearly stated reason reproduction is unavailable.
 
@@ -329,6 +337,8 @@ Stop and run a checkpoint when any of these thoughts appear:
 Do not say the work is fixed, complete, or safe unless verification was actually run or the limitation is explicit.
 
 If verification was not run, do not soften it with optimistic language; state the limitation plainly.
+
+Before calling the task complete, verify each locked outcome invariant or explicitly state what remains unverified. Static checks can verify code health, but they do not verify visual layout unless paired with a screenshot, browser, DOM/layout inspection, or an explicit visual test.
 
 Use this final wording pattern:
 

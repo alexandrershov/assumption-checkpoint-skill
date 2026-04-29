@@ -1,6 +1,6 @@
 {
   "name": "assumption-checkpoint",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Evidence-first agent skill for checking coding assumptions before acting.",
   "contextFileName": "GEMINI.md"
 }

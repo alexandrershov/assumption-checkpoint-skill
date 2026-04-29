@@ -42,6 +42,10 @@ Next verification:
 
 Pause before stating a root cause, before editing code based on a mental model, and before calling a change complete.
 
+Lock the user-visible outcome before narrowing the theory. For multi-part requests, split the outcome into observable invariants. A narrowed theory may explain one invariant, but it must not replace the full outcome. Outcome invariants describe visible or testable behavior, not the intended implementation.
+
+When using a narrowed theory, check which locked invariant it explains and which invariant remains unexplained, deferred, or out of scope. A theory can be strong enough only for the invariant it explains. Do not treat the whole task as diagnosed unless every locked invariant is explained, deferred, or explicitly out of scope.
+
 Prefer concrete evidence from tests, logs, stack traces, compiler output, direct caller/callee reads, fixtures, docs, git history, or UI observations. If the conclusion relies only on naming, local shape, or vibes, inspect one more independent source before acting.
 
 Avoid vague checkpoints like `Evidence checked: code` or `Next verification: run tests`. Name concrete files, commands, callers, callees, tests, logs, or UI observations, and choose verification specific enough to prove the next edit.
@@ -54,4 +58,4 @@ When requesting an independent evidence audit from `high` mode, include the high
 
 Checkpoint level controls how detailed the checkpoint is. It does not replace the theory strength gate, escalation rule, or independent evidence audit.
 
-Keep edits scoped to what the evidence supports. Decide verification before implementation. Do not claim work is fixed or complete unless verification was actually run, or clearly state what was not verified.
+Keep edits scoped to what the evidence supports. Decide verification before implementation. Do not claim work is fixed or complete unless verification was actually run, or clearly state what was not verified. Before calling the task complete, verify each locked outcome invariant or explicitly state what remains unverified. Static checks can verify code health, but they do not verify visual layout unless paired with a screenshot, browser, DOM/layout inspection, or an explicit visual test.
