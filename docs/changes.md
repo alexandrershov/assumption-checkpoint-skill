@@ -1,3 +1,14 @@
+# Unreleased
+
+## Changes
+
+- Generalized the Theory Strength Gate from edit-only language to any confident action: root-cause claims, review findings, explanations, implementation choices, edits, and completion claims.
+- Added `Outcome covered` to normal and high checkpoint templates so narrowed theories stay tied to locked outcome invariants.
+- Clarified high checkpoint visibility: high mode is mandatory as agent discipline, but routine high checkpoints can be surfaced as short summaries instead of full templates.
+- Strengthened high-risk evidence guidance for auth, data loss, migrations, cache, distributed state, async/concurrency, and API contracts.
+- Expanded evidence sources for product, UI, review, explanation, and integration work.
+- Clarified that Independent Evidence Audit is not required for every high checkpoint.
+
 # Release 0.0.5 - 2026-04-29
 
 ## Changes

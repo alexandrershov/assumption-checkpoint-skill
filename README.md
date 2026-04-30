@@ -4,15 +4,17 @@
   <img src="assets/logo.png" alt="Assumption Checkpoint logo" width="180">
 </p>
 
-`assumption-checkpoint` is a Codex skill for safer coding decisions. It makes the agent pause before confident claims or edits and check the nearest reliable evidence first.
+`assumption-checkpoint` is a Codex skill for safer coding decisions. It makes the agent pause before confident actions and check the nearest reliable evidence first.
 
 Use it when debugging, changing code, reviewing code, explaining unfamiliar code, or making implementation decisions where hidden assumptions can cause mistakes.
 
 ## How It Works
 
-The skill adds lightweight checkpoints at three moments:
+The skill adds lightweight checkpoints at risky moments:
 
+- before narrowing a broad or multi-part request into one theory;
 - before stating a root cause;
+- before making a review finding or choosing an implementation direction;
 - before editing code based on a mental model;
 - before calling a change complete.
 
@@ -20,6 +22,7 @@ Each checkpoint answers:
 
 ```text
 Assumption:
+Outcome covered:
 Evidence checked:
 Theory strength: Strong enough / Weak / Contradicted / Unresolved
 Remaining risk:
@@ -28,9 +31,9 @@ Next verification:
 
 For low-risk mechanical edits, it can use a shorter form: assumption plus verification.
 
-The checkpoint is primarily an internal agent discipline, not a transcript format. The agent should surface full checkpoints only when they affect trust, risk, scope, expectations, verification limits, or a user decision.
+The checkpoint is primarily an internal agent discipline, not a transcript format. The agent should surface full checkpoints only when they affect trust, risk, scope, expectations, verification limits, or a user decision. High checkpoints are mandatory as discipline, but routine high checkpoints can be surfaced as short summaries instead of full templates.
 
-The skill classifies each theory as strong enough, weak, contradicted, or unresolved before editing. Weak or unresolved theories require one more independent check, a clean-context evidence audit when subagents are available, or a user decision when the missing evidence is about intended behavior or scope.
+The skill classifies each theory as strong enough, weak, contradicted, or unresolved before confident action. Weak or unresolved theories require one more independent check, a clean-context evidence audit when uncertainty justifies the overhead, or a user decision when the missing evidence is about intended behavior or scope.
 
 Before narrowing a theory, the agent locks the user-visible outcome. Multi-part requests are split into observable invariants so a theory can explain one part of the task without quietly replacing the whole task.
 
@@ -38,17 +41,17 @@ The workflow also supports explicit checkpoint levels:
 
 - `assumption-checkpoint:low` for low-risk mechanical edits that cannot change runtime behavior;
 - `assumption-checkpoint:normal` as the default for ordinary debugging, code changes, reviews, explanations, and implementation decisions;
-- `assumption-checkpoint:high` for ambiguous, shared, high-risk, or behavior-changing work where the theory should name both confirming and contradicting signals before action.
+- `assumption-checkpoint:high` for ambiguous, shared, high-risk, visual, integration, or behavior-changing work where the theory should name both confirming and contradicting signals before action.
 
 User-selected levels are treated as the minimum strictness level. The agent may escalate to `high`, but must not downgrade.
 
-When `high` uses an independent evidence audit, the agent passes the high checkpoint fields to a clean-context subagent so it can test both the confirming and contradicting signals and look for alternative theories. The audit does not bypass the theory strength gate.
+When `high` uses an independent evidence audit, the agent passes the high checkpoint fields to a clean-context subagent so it can test both the confirming and contradicting signals and look for alternative theories. Audits are not required for every high checkpoint, and they do not bypass the theory strength gate.
 
 ## What It Helps With
 
-- Separates facts from guesses before code changes.
-- Forces evidence from tests, logs, stack traces, callers, callees, docs, or git history.
-- Classifies theory strength before edits instead of treating evidence as a vague note.
+- Separates facts from guesses before confident claims, findings, decisions, or code changes.
+- Forces evidence from tests, logs, stack traces, callers, callees, docs, UI observations, acceptance criteria, or git history.
+- Classifies theory strength before action instead of treating evidence as a vague note.
 - Names what would confirm and what would contradict high-risk theories.
 - Lets clean-context audits challenge high-risk theories using the same confirming and contradicting signals.
 - Escalates risky or ambiguous theories to independent evidence audit when local checking is not enough.
