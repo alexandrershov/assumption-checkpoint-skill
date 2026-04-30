@@ -5,92 +5,76 @@ description: Use when diagnosing bugs, changing code, reviewing code, explaining
 
 # Assumption Checkpoint
 
-## Overview
+## Core Purpose
 
-Use this skill to turn "I think I know" into checked evidence before acting. The core discipline is simple: name the assumption, check the cheapest reliable source, then act confidently only after the evidence supports the move.
+Use this skill as a decision gate, not a transcript format. Its job is to stop "I think I know" from becoming a confident claim, review finding, implementation direction, edit, or completion statement before the nearest reliable evidence supports it.
+
+Keep these outcome invariants:
+
+- A confident claim names the concrete evidence it relies on.
+- A behavior-changing edit is scoped to evidence from a test, log, stack trace, caller/callee path, schema, fixture, UI observation, or API contract.
+- Weak, contradicted, or unresolved theories get more evidence, a narrower scope, an audit when available, or a user decision.
+- Work is called complete only after concrete verification runs or the verification limit is stated plainly.
 
 ## Relationship to Other Process Skills
 
-This skill supplements stricter workflows. If debugging, TDD, code review, or completion-verification skills also apply, follow those workflows and use Assumption Checkpoint at their decision points.
+This skill supplements stricter workflows. If debugging, TDD, code review, or completion-verification skills also apply, follow those workflows and use this checkpoint at their decision points.
 
-Do not treat a checkpoint as a substitute for reproduction, failing tests, review evidence, or final verification.
+Do not treat a checkpoint as a substitute for reproduction, failing tests, review evidence, or final verification. When another process already requires the same evidence, record the checkpoint inside that workflow instead of duplicating ceremony.
 
-When another process skill already requires the same evidence, do not duplicate ceremony; record the checkpoint inside that workflow's existing notes.
+## Risk Router
 
-## Required Checkpoints
+Default to `assumption-checkpoint:normal` unless the user sets a higher minimum. Never downgrade a user-selected level.
 
-Pause at these points:
+| Level | Use when | Form |
+| --- | --- | --- |
+| `low` | Mechanical edits that cannot change runtime behavior: typos, comments, docs wording, labels, metadata sync, formatting. | 1-2 lines. |
+| `normal` | Ordinary debugging, code changes, reviews, explanations, and implementation decisions. | Short internal checkpoint. |
+| `high` | Wrong assumptions have meaningful cost, evidence is ambiguous, alternatives would change the edit, or the task touches shared behavior, auth, permissions, privacy, persistence, migrations, cache, distributed state, async/concurrency, retries, queues, background jobs, API contracts, external integrations, visual/UI behavior, flaky bugs, broad refactors, incidents, or user-visible regressions. | Full checkpoint or brief surfaced summary. |
 
-1. Before narrowing a broad or multi-part request into one theory.
-2. Before stating a root cause or confident explanation.
-3. Before making a review finding or choosing an implementation direction.
-4. Before editing code based on a mental model.
-5. Before calling a change complete.
+Do not use `low` for behavior changes, debugging, root-cause claims, shared code, persistence, cache, auth, async behavior, migrations, API contracts, test logic, or completion claims after code changes.
 
-At each pause, write a short checkpoint in working notes or the user update. Use the checkpoint level rules below to choose the format.
+Escalating to `high` does not make weak evidence strong. The theory must still pass the Theory Strength Gate.
 
-## Checkpoint Visibility
+## When to Pause
 
-Assumption Checkpoint is primarily a discipline for the agent, not a transcript format for the user.
+Run a checkpoint before:
 
-Prefer internal checkpoints when they only guide your own next action. Surface the checkpoint to the user when it affects trust, risk, scope, expectations, or a decision the user may need to make.
+1. Narrowing a broad or multi-part request into one theory.
+2. Stating a root cause or confident explanation.
+3. Making a review finding or choosing an implementation direction.
+4. Editing code based on a mental model.
+5. Calling a change complete.
 
-Surface at least a brief checkpoint when:
+Before narrowing, lock the user-visible outcome. For multi-part requests, split it into observable invariants. A theory can be strong enough only for the invariant it explains; do not treat the whole task as diagnosed until every invariant is explained, deferred, verified, or explicitly out of scope.
 
-- the checkpoint level is `high` and the checkpoint affects trust, risk, scope, user-visible expectations, verification limits, or the next action;
-- the theory is Weak, Contradicted, or Unresolved;
-- the missing evidence is about intended behavior, product requirements, or acceptable scope;
-- verification cannot be run or would leave important residual risk;
-- the next action changes because of the evidence checked.
+Good invariant: sibling inputs keep the same top position when one field shows validation text.
+Bad invariant: layout looks correct.
 
-High checkpoints are mandatory as agent discipline, but they do not always need to be pasted as a full transcript. If a high checkpoint is routine and only guides your own next local check, a short surfaced summary is enough.
+## Visibility and Budget
 
-Do not surface a full checkpoint for low-risk mechanical work when the evidence and verification are obvious. A short working update is enough.
+Checkpoints are primarily internal agent discipline.
 
-Even when a checkpoint is internal, keep it concrete enough to change or confirm the next action.
+Surface a brief checkpoint to the user when it affects trust, risk, scope, expectations, verification limits, or a decision the user may need to make. Surface at least a short summary when the theory is `Weak`, `Contradicted`, or `Unresolved`, when intended behavior or scope is missing, when verification cannot run, or when checked evidence changes the next action.
 
-## Checkpoint Levels
+Avoid full templates for routine work:
 
-Assumption Checkpoint supports three strictness levels:
+- `low`: one sentence or two fields.
+- `normal`: usually 3-5 short lines in working notes.
+- `high`: full fields only when risk or ambiguity justifies them; otherwise surface a concise risk/evidence summary.
 
-- `assumption-checkpoint:low`
-- `assumption-checkpoint:normal`
-- `assumption-checkpoint:high`
+A checkpoint must change or confirm the next action: what to inspect, what to edit, what to leave alone, what to ask, or how to verify. If it does none of those, it is ceremony.
 
-If the user specifies a level, treat it as the minimum strictness level. If no level is specified, use `normal`.
+## Checkpoint Formats
 
-The agent must not downgrade the level. It may escalate to `high` when risk, ambiguity, weak evidence, unresolved alternatives, shared/runtime behavior, or user request makes deeper checking useful.
-
-Escalating the checkpoint level does not resolve weak or unresolved evidence by itself. The theory must still satisfy the Theory Strength Gate before acting confidently or declaring completion.
-
-Checkpoint level controls how detailed the checkpoint is. The Escalation Rule controls when the agent must stop choosing a direction. Independent Evidence Audit is one possible escalation tool. These rules do not replace each other.
-
-### Low
-
-Use `low` only for low-risk mechanical edits that cannot change runtime behavior.
-
-Examples:
-
-- fixing typos;
-- updating comments or documentation;
-- renaming text labels without behavior changes;
-- synchronizing package metadata;
-- formatting-only changes.
-
-Use this compressed checkpoint:
+Low:
 
 ```text
 Assumption:
 Verification:
 ```
 
-Do not use `low` for behavior-changing edits, debugging, root-cause claims, shared code, persistence, cache, auth, async behavior, migrations, API contracts, or test logic.
-
-### Normal
-
-Use `normal` as the default mode for ordinary debugging, code changes, reviews, explanations, and implementation decisions.
-
-Use the standard checkpoint:
+Normal:
 
 ```text
 Assumption:
@@ -101,26 +85,7 @@ Remaining risk:
 Next verification:
 ```
 
-Before taking the next confident action, the theory must be `Strong enough`.
-
-### High
-
-Use `high` when the cost of a wrong theory is meaningful, the behavior is shared, the evidence is weak or ambiguous, or multiple plausible theories would lead to different edits.
-
-Use `high` when the task involves:
-
-- auth, permissions, security, or privacy;
-- persistence, migrations, data loss, or schema changes;
-- cache invalidation or distributed state;
-- async flow, concurrency, retries, queues, or background jobs;
-- API contracts or external integrations;
-- UI or visual behavior that static checks cannot prove;
-- flaky, intermittent, or hard-to-reproduce bugs;
-- broad refactors or shared abstractions;
-- production incidents or user-visible regressions;
-- any user request for deeper analysis.
-
-Use the high checkpoint:
+High:
 
 ```text
 Assumption:
@@ -135,250 +100,167 @@ Remaining risk:
 Next verification:
 ```
 
-A high checkpoint must name at least one concrete signal that would support the theory and one concrete signal that would contradict it.
-
-If the contradicting signal is found, revise or drop the theory before acting.
-
-If alternative theories remain plausible and would change the edit, finding, explanation, or implementation direction, follow the Escalation Rule instead of guessing.
-
-Keep it brief. The goal is not ceremony; the goal is to stop invisible guesses from becoming implementation.
-
-A checkpoint must change or confirm the next action. If it does not identify evidence to check, scope to limit, or verification to run, it is too vague.
+High checkpoints must name at least one concrete confirming signal and one concrete contradicting signal. If the contradicting signal appears, revise or drop the theory before acting.
 
 ## Theory Strength Gate
 
-After each checkpoint, classify the current theory before acting confidently:
+Classify the current theory before any confident action.
 
 | State | Meaning | Next action |
 | --- | --- | --- |
-| Strong enough | The evidence justifies the next small confident action. | Act only within the supported scope. |
-| Weak | The theory may be right, but the evidence is thin. | Check one more independent source before acting. |
-| Contradicted | Checked evidence conflicts with the theory. | Drop or revise the theory before acting. |
-| Unresolved | The evidence cannot be honestly classified. | Treat as not ready to act confidently. Resolve locally, audit independently, or ask the user. |
+| `Strong enough` | Evidence justifies the next small action. | Act only within the supported scope. |
+| `Weak` | The theory may be right, but evidence is thin. | Check one more independent source. |
+| `Contradicted` | Checked evidence conflicts with the theory. | Drop or revise the theory. |
+| `Unresolved` | Evidence cannot be honestly classified. | Resolve locally, audit when available, or ask the user. |
 
-A theory is strong enough when it has one strong signal or two independent weaker signals, and no unresolved alternative would change the edit, finding, explanation, implementation direction, or completion claim.
+A theory is `Strong enough` when it has one strong signal or two independent weaker signals, and no unresolved alternative would change the claim, finding, edit, implementation direction, or completion statement.
 
-A high-risk theory involving auth, privacy, data loss, migrations, cache, distributed state, async/concurrency, or API contracts usually needs more than a single isolated signal. Require one strong signal plus targeted verification, or two independent signals, unless you explicitly state why stronger evidence is unavailable.
+High-risk theories involving auth, privacy, data loss, migrations, cache, distributed state, async/concurrency, or API contracts usually need one strong signal plus targeted verification, or two independent signals. If stronger evidence is unavailable, state the limit explicitly.
 
-A theory is not `Strong enough` merely because supporting evidence exists. For non-mechanical or behavior-changing work, also consider what evidence would contradict the theory. If no concrete contradicting signal can be named, treat the theory as `Weak` or `Unresolved`.
+Supporting evidence is not enough by itself for non-mechanical work. Also name what would contradict the theory. If no concrete contradicting signal can be named, treat the theory as `Weak` or `Unresolved`.
 
-A theory is weak or unresolved when:
+Treat the theory as `Weak` or `Unresolved` when:
 
-- evidence comes only from naming, local shape, or one isolated file;
-- the checked evidence does not directly explain the observed symptom;
-- the caller/callee path was not checked for behavior that may be shared;
-- another plausible theory would lead to a different edit, finding, explanation, or implementation direction;
-- the blast radius includes shared behavior, persistence, cache, auth, async flow, migrations, or API contracts without supporting tests or runtime evidence;
-- the next verification is vague.
+- evidence comes only from naming, local shape, vibes, or one isolated file;
+- the evidence does not directly explain the observed symptom;
+- caller/callee behavior that may be shared was not checked;
+- another plausible theory would lead to a different claim, finding, edit, or direction;
+- shared behavior, persistence, cache, auth, async flow, migrations, or API contracts lack supporting tests or runtime evidence;
+- next verification is vague.
 
-If evidence cannot be classified as Strong enough, Weak, or Contradicted, treat it as Unresolved. Do not edit, state a root cause, publish a review finding, give a confident explanation, choose an implementation direction, or declare completion yet.
+Do not edit, state a root cause, publish a review finding, give a confident explanation, choose an implementation direction, or declare completion while the relevant theory is `Weak`, `Contradicted`, or `Unresolved`.
 
-## Checkpoint Quality Examples
+## Evidence Ladder
 
-Bad checkpoints are vague and do not justify the next action:
+Prefer the strongest cheap evidence available:
+
+| Evidence source | Best use |
+| --- | --- |
+| Failing test, log, stack trace, compiler output, runtime observation | Root cause and verification |
+| Direct caller-to-callee read | Behavior and hidden coupling |
+| Existing tests and fixtures | Intended behavior |
+| User request, acceptance criteria, issue, PR discussion | Product intent and scope |
+| Screenshot, browser observation, DOM/layout inspection, visual test | UI and visual behavior |
+| External API docs, contract tests, recorded fixtures | Integration behavior |
+| Git history or docs | Why behavior exists |
+| Naming and local shape | Last resort; low confidence |
+
+Evidence checked must name the concrete source: command, file, test, log, caller, callee, schema, fixture, doc, contract, or UI observation.
+
+Stop once the next small action is justified for the risk level. Expand only when the checked source contradicts the theory, exposes shared behavior, leaves outcome invariants uncovered, or the blast radius requires stronger evidence.
+
+## Escalation
+
+If evidence is weak, check one independent source before acting. If two evidence-expansion rounds still leave multiple plausible theories and choosing between them would change the claim, finding, edit, direction, or scope, stop choosing.
+
+When the missing evidence is technically checkable, inspect another independent source or request an independent evidence audit when the environment and user permissions allow subagents. In environments where delegation is unavailable or not permitted, do the independent check yourself.
+
+Ask the user when the missing evidence is about intended behavior, product requirements, acceptable scope, or another decision local artifacts cannot answer.
+
+For an independent evidence audit, give a clean-context reviewer only the symptom, failing signal if available, relevant files or commands, and the theory to challenge. The reviewer should not implement. Expected output:
+
+```text
+Supporting evidence:
+Contradicting evidence:
+Missing evidence:
+Recommended next check:
+Verdict: supported / weakened / contradicted / unresolved
+```
+
+For `high` audits, include the high checkpoint fields and ask the reviewer to test both the expected confirming and contradicting signals. An audit verdict does not bypass the Theory Strength Gate.
+
+## Task Cards
+
+Debugging:
+
+- Lock the observable symptom and outcome invariant.
+- Require at least one reproducible signal, failing test, log, stack trace, runtime observation, or a clear reason reproduction is unavailable.
+- Check the nearest caller/callee path before the first fix.
+- Verify with the narrowest meaningful command first; broaden when shared behavior changes.
+
+Code review:
+
+- Separate facts from inferences.
+- A finding needs a concrete failure mode and evidence from the diff, caller/callee path, test, fixture, contract, or runtime behavior.
+- Do not report "seems risky" unless the risk has a plausible trigger and impact.
+
+Explanation:
+
+- Say "the code shows" only for observed behavior.
+- Say "this likely means" for inferred intent.
+- Check one more source when explaining unfamiliar shared behavior from one file.
+
+Implementation decisions:
+
+- Compare approaches only when they change user-visible behavior, shared behavior, persistence, API contracts, or test strategy.
+- Name the intended edit scope and what is deliberately left alone.
+- Make the smallest change supported by evidence.
+
+Completion:
+
+- Check every locked outcome invariant.
+- State the concrete verification command or observation.
+- If verification was not run, say that plainly and name what remains unverified.
+- Static checks do not verify visual layout unless paired with screenshot, browser, DOM/layout inspection, or an explicit visual test.
+
+## Quality Examples
+
+Bad checkpoint:
 
 ```text
 Assumption: The parser is broken.
 Evidence checked: Code.
 Theory strength: Strong enough.
-Remaining risk: Low.
 Next verification: Run tests.
 ```
 
-Good checkpoints name concrete sources, scope, and verification:
+Good normal checkpoint:
 
 ```text
 Assumption: Empty input reaches parseItems() without normalization.
 Outcome covered: Empty imports should produce a validation error instead of crashing.
-Evidence checked: Failing test `parser.test.ts`, caller `loadItems()`, callee `parseItems()`.
+Evidence checked: Failing test parser.test.ts, caller loadItems(), callee parseItems().
 Theory strength: Strong enough.
 Remaining risk: Shared parser behavior may affect import and preview flows.
-Next verification: Run `npm test -- parser.test.ts`, then the import flow test if parser behavior changes.
+Next verification: Run npm test -- parser.test.ts, then the import flow test if parser behavior changes.
 ```
 
-Bad high checkpoints only add labels:
+Good high checkpoint:
 
 ```text
-Assumption: The cache is stale.
-Expected confirming signal: It is stale.
-Expected contradicting signal: It is not stale.
-Evidence checked: Cache file.
-Theory strength: Strong enough.
-Alternative theories: None.
-Blast radius: Cache.
-Remaining risk: Low.
-Next verification: Test it.
-```
-
-Good high checkpoints name signals that can actually be checked:
-
-```text
-Assumption: The dashboard shows stale counts because refreshUserStats() does not invalidate the user-stats cache key.
+Assumption: Dashboard stats stay stale because saveUser() does not invalidate the user-stats query key.
 Outcome covered: Dashboard stats update after saving user settings.
-Expected confirming signal: The mutation completes, but no invalidation call references `user-stats`.
-Expected contradicting signal: A caller invalidates `user-stats` after the mutation or the query key differs from the assumed key.
-Evidence checked: Mutation `saveUser()`, caller `UserSettingsForm`, query key in `useUserStats()`.
+Expected confirming signal: The mutation completes, but no invalidation call references user-stats.
+Expected contradicting signal: A caller invalidates user-stats after the mutation or the query key differs from the assumed key.
+Evidence checked: saveUser() mutation, UserSettingsForm caller, useUserStats() query key.
 Theory strength: Strong enough.
-Alternative theories: Backend returns cached data; UI subscribes to a different user id.
-Blast radius: User settings save flow and dashboard stats refresh.
+Alternative theories: Backend cache; UI subscribes to a different user id.
+Blast radius: Settings save flow and dashboard stats refresh.
 Remaining risk: Backend caching not checked.
-Next verification: Add/adjust invalidation, then run the user settings test and manually confirm dashboard refresh if no test exists.
+Next verification: Add targeted invalidation, run settings test, and manually confirm dashboard refresh if no test exists.
 ```
-
-## Evidence Ladder
-
-Prefer the strongest available evidence that is cheap enough for the task:
-
-| Confidence source | Use for |
-| --- | --- |
-| Failing test, log, stack trace, compiler output | Root cause and verification |
-| Direct code path read from caller to callee | Behavior and coupling |
-| Existing tests and fixtures | Intended behavior |
-| User request, acceptance criteria, issue or PR discussion | Product intent and scope |
-| Screenshot, browser observation, DOM/layout inspection, visual test | UI and visual behavior |
-| External API docs, contract tests, recorded fixtures | Integration behavior |
-| Git history or docs | Why behavior exists |
-| Naming and local shape only | Last resort; treat as low confidence |
-
-If the current conclusion relies mostly on naming, vibes, or one isolated file, say so and inspect one more source before acting confidently.
-
-If evidence comes only from naming, local shape, or a single isolated file, confidence is low. Inspect at least one independent source before taking any of those confident actions.
-
-Evidence checked must name the concrete source: command, file, test, log, caller, callee, or UI observation.
-
-Stop once the next small action is justified by the evidence required for that risk level. Do not keep expanding evidence unless the checked source contradicts the assumption, exposes shared behavior, or the blast radius requires stronger evidence.
-
-## Escalation Rule
-
-If two evidence-expansion rounds still leave multiple plausible theories, and choosing between them would change the edit, finding, explanation, implementation direction, or broaden scope, stop choosing a direction.
-
-If the missing evidence is technically checkable inside the codebase, use an independent evidence audit or inspect one more independent source.
-
-Ask the user when the missing evidence is about intended behavior, product requirements, acceptable scope, or another decision that cannot be inferred from local artifacts.
-
-Report each theory with:
-
-- supporting evidence;
-- contradicting or missing evidence;
-- proposed next check or action.
-
-## Independent Evidence Audit
-
-For high-risk or ambiguous decisions, ask a clean-context subagent to challenge the current theory before acting when subagents are available and the uncertainty justifies the overhead. If subagents are not available, inspect one more independent source or ask the user when the missing evidence is not locally discoverable.
-
-Use an independent audit when:
-
-- a theory remains weak or unresolved after one or two evidence-expansion rounds;
-- the direction depends on an unverified assumption;
-- multiple plausible theories would lead to different edits, findings, explanations, or implementation directions;
-- the change affects shared behavior, persistence, cache, auth, async flow, migrations, or API contracts;
-- the main agent has already formed a strong root-cause narrative from limited evidence.
-
-Do not request an independent audit for every `high` checkpoint. Use it when the theory is still weak or unresolved, alternatives would change direction, or the blast radius is high and the evidence remains narrow.
-
-Give the subagent only the minimum task-local context: the symptom, failing test/log/stack trace if available, relevant files or commands, and the theory to challenge. Do not pass the full reasoning trail unless it is needed to reproduce the check.
-
-The subagent's job is not to implement the fix. Its job is to falsify or strengthen the theory.
-
-Expected audit output:
-
-```text
-Supporting evidence:
-Contradicting evidence:
-Missing evidence:
-Recommended next check:
-Verdict: supported / weakened / contradicted / unresolved
-```
-
-When requesting an Independent Evidence Audit from `high` mode, include the high checkpoint fields when available: the assumption, outcome covered, expected confirming signal, expected contradicting signal, evidence checked so far, alternative theories if known, blast radius, and the direction being considered.
-
-The audit should independently test both the expected confirming and expected contradicting signals, and look for alternative theories that would change the edit, finding, explanation, or implementation direction.
-
-For high-mode audits, use this expanded output when helpful:
-
-```text
-Theory to audit:
-Confirming signal checked:
-Contradicting signal checked:
-Supporting evidence:
-Contradicting evidence:
-Alternative theory:
-Missing evidence:
-Recommended next check:
-Verdict: supported / weakened / contradicted / unresolved
-```
-
-The audit result does not bypass the Theory Strength Gate. If the verdict is weakened, contradicted, or unresolved, do not act confidently until the theory is revised or more evidence is checked.
-
-## Working Pattern
-
-1. Restate the task as an observable outcome.
-2. Lock the user-visible outcome before narrowing the theory. For multi-part requests, split the outcome into observable invariants. A narrowed theory may explain one invariant, but it must not replace the full outcome.
-3. Identify the most likely assumption that could be wrong.
-4. Inspect the nearest source of truth: tests, caller, callee, schema, logs, UI, or runtime output.
-5. List the blast radius: state, cache, persistence, network/API contract, async behavior, UI expectations, migrations, tests.
-6. Classify theory strength and resolve Weak, Contradicted, or Unresolved before acting confidently.
-7. Name the intended edit scope: files/modules to touch and files/modules deliberately left alone.
-8. Make the smallest change that fits the evidence.
-9. Verify with the narrowest meaningful command first; broaden if the change touches shared behavior.
-
-Outcome invariants describe visible or testable behavior, not the intended implementation. Keep them concrete enough to verify.
-
-Good invariant: sibling inputs keep the same top position when one field shows validation text.
-Bad invariant: layout looks correct.
-
-When using a narrowed theory, include a quick coverage check: which locked invariant does this theory explain, and which invariant remains unexplained, deferred, or out of scope? A theory can be `Strong enough` only for the invariant it explains. Do not treat the whole task as diagnosed unless every locked invariant is explained, deferred, or explicitly out of scope.
-
-For bugs, do not patch until there is at least one reproducible signal or a clearly stated reason reproduction is unavailable.
-
-For reviews, separate facts from inferences. A finding needs a concrete failure mode, not just "this seems risky."
-
-For explanations, distinguish "the code shows" from "this likely means."
-
-## Task-Specific Use
-
-- Debugging: checkpoint before root-cause claims and before the first fix.
-- Code review: checkpoint before each finding; a finding needs a concrete failure mode and evidence from the diff, caller/callee path, test, or contract.
-- Explanation: checkpoint before presenting an uncertain inference as fact; separate observed code behavior from likely intent.
-- Implementation decisions: checkpoint before choosing among approaches when the choice affects shared behavior, user-visible behavior, persistence, API contracts, or test strategy.
-- Completion: checkpoint against every locked outcome invariant, then state what was verified and what was not.
 
 ## Red Flags
 
-Stop and run a checkpoint when any of these thoughts appear:
+Run a checkpoint when these thoughts appear:
 
 | Thought | Correction |
 | --- | --- |
-| "This is probably enough context." | Read the caller/callee or a test. |
-| "The fix is obvious." | State the assumption the fix depends on. |
-| "It's a tiny change." | Check whether the touched behavior is shared. |
-| "I'll verify after." | Decide verification before acting. |
+| "This is probably enough context." | Read a caller/callee, test, log, or contract. |
+| "The fix is obvious." | Name the assumption the fix depends on. |
+| "It's a tiny change." | Check whether the behavior is shared. |
+| "I'll verify after." | Decide verification before editing. |
 | "The test failure is unrelated." | Prove or quarantine it before claiming success. |
 | "No tests are needed." | Name the risk level and manual/automated substitute. |
 
-## Checkpoint Done Criteria
-
-Before moving past a checkpoint, confirm:
-
-- the assumption is named;
-- the outcome or invariant covered is clear;
-- concrete evidence is named;
-- a contradicting signal was considered for non-mechanical work;
-- the next action is limited to the supported scope;
-- verification is specific, or the verification limit is explicit.
-
 ## Completion Rule
 
-Do not say the work is fixed, complete, or safe unless verification was actually run or the limitation is explicit.
+Do not say the work is fixed, complete, or safe unless verification was actually run or the limitation is explicit. Do not soften missing verification with optimistic language.
 
-If verification was not run, do not soften it with optimistic language; state the limitation plainly.
-
-Before calling the task complete, verify each locked outcome invariant or explicitly state what remains unverified. Static checks can verify code health, but they do not verify visual layout unless paired with a screenshot, browser, DOM/layout inspection, or an explicit visual test.
-
-Use this final wording pattern:
+Use this final wording pattern when relevant:
 
 ```text
 Verified with: <command or concrete check>
-Not verified: <anything important not run>
+Not verified: <important checks not run>
 Residual risk: <only if non-trivial>
 ```

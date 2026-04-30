@@ -1,7 +1,11 @@
-# Unreleased
+# Release 0.1.0 - 2026-04-30
 
 ## Changes
 
+- Compact rewrite around a risk router, outcome invariants, checkpoint budget, theory gate, task cards, and platform-safe audit language.
+- Added `scripts/check-sync.sh` and `npm run check:sync` to prevent bundled skill copies and Cursor rules from drifting.
+- Added `docs/evals/assumption-checkpoint-scenarios.md` with pressure scenarios for A/B testing skill behavior.
+- Bumped package, Gemini extension, Claude plugin, and Cursor plugin metadata to `0.1.0`.
 - Generalized the Theory Strength Gate from edit-only language to any confident action: root-cause claims, review findings, explanations, implementation choices, edits, and completion claims.
 - Added `Outcome covered` to normal and high checkpoint templates so narrowed theories stay tied to locked outcome invariants.
 - Clarified high checkpoint visibility: high mode is mandatory as agent discipline, but routine high checkpoints can be surfaced as short summaries instead of full templates.

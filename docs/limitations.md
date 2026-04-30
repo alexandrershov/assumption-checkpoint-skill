@@ -4,23 +4,17 @@
 
 Possible issues:
 
-- It can add extra friction for very small tasks.
-- A weak checkpoint can become performative if the evidence is vague.
+- It can add friction for tiny tasks if `low` is not used aggressively enough.
+- A checkpoint can become performative when evidence is vague or does not change the next action.
 - Level selection can become performative if `low`, `normal`, or `high` is treated as a label instead of a strictness floor.
-- It depends on the agent choosing a useful source of truth.
+- It depends on the agent choosing useful evidence, not just nearby evidence.
 - It depends on the agent locking the full user-visible outcome before narrowing a theory.
 - It cannot replace reproduction, failing tests, review evidence, or final verification.
-- It may slow exploration when the codebase has poor tests or unclear ownership.
-- It can still miss hidden coupling if the inspected source is too narrow.
-- Independent evidence audits can reduce confirmation bias, but they still depend on the quality of the context and artifacts given to the subagent.
-- High-mode audits are useful only when the prompt gives the subagent concrete confirming and contradicting signals to test; they are not required for every high checkpoint.
+- It can still miss hidden coupling when the inspected source is too narrow.
+- Independent evidence audits depend on platform support, user permission, and the quality of the context passed to the reviewer.
 
-The main failure mode is treating the checkpoint as documentation instead of a decision point. A good checkpoint should change or confirm the next action: what to inspect, what to do, what to leave alone, or how to verify.
+The main failure mode is treating the checkpoint as documentation instead of a decision point. A good checkpoint changes or confirms what to inspect, edit, leave alone, ask, or verify.
 
-Another failure mode is treating a narrowed theory as the whole task. Outcome invariants reduce that risk, but they only help when the agent verifies each locked invariant or explicitly states what remains unverified.
+Another failure mode is over-sharing. The skill is primarily internal agent discipline; user-visible checkpoints should appear only when they affect trust, risk, scope, expectations, verification limits, or a user decision.
 
-For best results, keep checkpoints short and concrete. Use one strong signal or two independent weaker signals before moving forward, and require stronger evidence for high-risk areas such as auth, data loss, migrations, cache, distributed state, async/concurrency, or API contracts.
-
-Use `low` only when the edit cannot change runtime behavior. Use `high` for meaningful risk or ambiguity, but remember that a high checkpoint does not make weak evidence strong by itself.
-
-Likewise, a high-mode audit does not bypass the Theory Strength Gate. A weakened, contradicted, or unresolved audit verdict still requires revising the theory or checking more evidence before acting confidently.
+For best results, keep checkpoints short and concrete. Use one strong signal or two independent weaker signals before moving forward, and require stronger evidence for high-risk areas such as auth, data loss, migrations, cache, distributed state, async/concurrency, and API contracts.
