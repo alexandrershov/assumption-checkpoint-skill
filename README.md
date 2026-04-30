@@ -4,7 +4,7 @@
   <img src="assets/logo.png" alt="Assumption Checkpoint logo" width="180">
 </p>
 
-`assumption-checkpoint` is a Codex skill for safer coding decisions. It makes the agent pause before confident actions and check the nearest reliable evidence first.
+`assumption-checkpoint` is a Codex skill for safer coding decisions. It makes the agent pause before confident actions, choose a risk level, and check the nearest reliable evidence first.
 
 Use it when debugging, changing code, reviewing code, explaining unfamiliar code, or making implementation decisions where hidden assumptions can cause mistakes.
 
@@ -18,7 +18,20 @@ The skill adds lightweight checkpoints at risky moments:
 - before editing code based on a mental model;
 - before calling a change complete.
 
-Each checkpoint answers:
+The skill now starts from four outcome invariants:
+
+- confident claims name concrete evidence;
+- behavior-changing edits stay scoped to evidence;
+- weak, contradicted, or unresolved theories get more evidence, narrower scope, audit, or a user decision;
+- completion claims require concrete verification or an explicit verification limit.
+
+It uses a compact risk router:
+
+- `assumption-checkpoint:low` for mechanical edits that cannot change runtime behavior;
+- `assumption-checkpoint:normal` for ordinary debugging, code changes, reviews, explanations, and implementation decisions;
+- `assumption-checkpoint:high` for ambiguous, shared, high-risk, visual, integration, or behavior-changing work.
+
+Each normal checkpoint answers:
 
 ```text
 Assumption:
@@ -37,15 +50,9 @@ The skill classifies each theory as strong enough, weak, contradicted, or unreso
 
 Before narrowing a theory, the agent locks the user-visible outcome. Multi-part requests are split into observable invariants so a theory can explain one part of the task without quietly replacing the whole task.
 
-The workflow also supports explicit checkpoint levels:
-
-- `assumption-checkpoint:low` for low-risk mechanical edits that cannot change runtime behavior;
-- `assumption-checkpoint:normal` as the default for ordinary debugging, code changes, reviews, explanations, and implementation decisions;
-- `assumption-checkpoint:high` for ambiguous, shared, high-risk, visual, integration, or behavior-changing work where the theory should name both confirming and contradicting signals before action.
-
 User-selected levels are treated as the minimum strictness level. The agent may escalate to `high`, but must not downgrade.
 
-When `high` uses an independent evidence audit, the agent passes the high checkpoint fields to a clean-context subagent so it can test both the confirming and contradicting signals and look for alternative theories. Audits are not required for every high checkpoint, and they do not bypass the theory strength gate.
+When `high` uses an independent evidence audit, the agent passes the high checkpoint fields to a clean-context reviewer so it can test both the confirming and contradicting signals and look for alternative theories. Audits are used only when the environment and user permissions allow them; otherwise the agent performs another independent local check. Audits do not bypass the theory strength gate.
 
 ## What It Helps With
 
@@ -57,6 +64,7 @@ When `high` uses an independent evidence audit, the agent passes the high checkp
 - Escalates risky or ambiguous theories to independent evidence audit when local checking is not enough.
 - Keeps edits scoped to what the evidence supports.
 - Keeps narrowed theories tied to the full user-visible outcome.
+- Uses task cards for debugging, review, explanation, implementation, and completion.
 - Defines verification before implementation.
 - Prevents “looks fixed” claims when tests or checks were not actually run.
 - Reduces performative checkpoints by requiring concrete sources and useful next verification.
@@ -120,6 +128,16 @@ If the plugin is published to the Cursor Marketplace, it can be installed from C
 - `cursor-plugin/.cursor-plugin/plugin.json` makes the Cursor plugin package.
 - `.cursor/rules/assumption-checkpoint.mdc` provides a Cursor project-rule fallback.
 - `assumption-checkpoint/agents/openai.yaml` defines the OpenAI-facing display name, prompt, and invocation policy.
+- `scripts/check-sync.sh` verifies bundled skill and Cursor rule copies are synchronized.
+- `docs/evals/assumption-checkpoint-scenarios.md` contains pressure scenarios for A/B testing skill behavior.
+
+## Validation
+
+```bash
+npm run check:sync
+```
+
+This checks that the canonical skill, Gemini/Claude/Cursor bundled skill copies, and Cursor rule copies are synchronized.
 
 ## Default Prompt
 

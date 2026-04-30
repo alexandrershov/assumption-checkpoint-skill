@@ -3,20 +3,40 @@ description: Use Assumption Checkpoint when diagnosing bugs, changing code, revi
 alwaysApply: false
 ---
 
-Use the Assumption Checkpoint workflow before confident actions, claims, findings, decisions, or code edits:
+Use Assumption Checkpoint as a decision gate before confident claims, findings, implementation choices, code edits, or completion statements. The goal is checked evidence, not visible ceremony.
 
-Treat checkpoints primarily as agent discipline, not as a transcript format. Surface a full checkpoint to the user when it affects trust, risk, scope, expectations, verification limits, or a user decision. High checkpoints are mandatory as discipline, but routine high checkpoints can be surfaced as short summaries. For low-risk mechanical work, a short working update is enough.
+## Risk Router
 
-Use `assumption-checkpoint:normal` by default. Treat a user-selected level as the minimum strictness level. Do not downgrade it. Escalate to `high` when risk, ambiguity, weak evidence, unresolved alternatives, shared/runtime behavior, or user request makes deeper checking useful.
+Default to `assumption-checkpoint:normal`. Treat a user-selected level as the minimum strictness and never downgrade it.
 
-Use `low` only for low-risk mechanical edits that cannot change runtime behavior:
+- `low`: only mechanical edits that cannot change runtime behavior, such as typos, docs wording, labels, metadata sync, or formatting. Use 1-2 lines.
+- `normal`: ordinary debugging, code changes, reviews, explanations, and implementation decisions. Usually keep the checkpoint internal and short.
+- `high`: use when evidence is ambiguous, alternatives would change the edit, or the task touches shared behavior, auth, permissions, privacy, persistence, migrations, cache, distributed state, async/concurrency, retries, queues, API contracts, external integrations, UI/visual behavior, flaky bugs, broad refactors, incidents, or user-visible regressions.
+
+Do not use `low` for behavior changes, debugging, root-cause claims, shared code, persistence, cache, auth, async behavior, migrations, API contracts, test logic, or completion claims after code changes.
+
+## Pause Points
+
+Run a checkpoint before narrowing a broad request into one theory, stating a root cause, making a review finding, choosing an implementation direction, editing from a mental model, or calling work complete.
+
+Before narrowing, lock the user-visible outcome. For multi-part requests, split it into observable invariants. A theory can be strong enough only for the invariant it explains.
+
+## Visibility
+
+Prefer internal checkpoints. Surface a brief checkpoint when it affects trust, risk, scope, expectations, verification limits, or a user decision. Surface at least a short summary when the theory is Weak, Contradicted, or Unresolved; intended behavior or scope is missing; verification cannot run; or checked evidence changes the next action.
+
+A checkpoint must change or confirm what to inspect, edit, leave alone, ask, or verify. If it does none of those, it is ceremony.
+
+## Formats
+
+Low:
 
 ```text
 Assumption:
 Verification:
 ```
 
-Use `normal` for ordinary debugging, code changes, reviews, explanations, and implementation decisions:
+Normal:
 
 ```text
 Assumption:
@@ -27,7 +47,7 @@ Remaining risk:
 Next verification:
 ```
 
-Use `high` when the cost of a wrong theory is meaningful, the behavior is shared, the evidence is weak or ambiguous, or multiple plausible theories would lead to different edits:
+High:
 
 ```text
 Assumption:
@@ -42,22 +62,43 @@ Remaining risk:
 Next verification:
 ```
 
-Pause before narrowing a broad or multi-part request into one theory, before stating a root cause or confident explanation, before making a review finding or choosing an implementation direction, before editing code based on a mental model, and before calling a change complete.
+High checkpoints must name concrete confirming and contradicting signals. If the contradicting signal appears, revise or drop the theory before acting.
 
-Lock the user-visible outcome before narrowing the theory. For multi-part requests, split the outcome into observable invariants. A narrowed theory may explain one invariant, but it must not replace the full outcome. Outcome invariants describe visible or testable behavior, not the intended implementation.
+## Theory Gate
 
-When using a narrowed theory, check which locked invariant it explains and which invariant remains unexplained, deferred, or out of scope. A theory can be strong enough only for the invariant it explains. Do not treat the whole task as diagnosed unless every locked invariant is explained, deferred, or explicitly out of scope.
+Classify the theory before any confident action:
 
-Prefer concrete evidence from tests, logs, stack traces, compiler output, direct caller/callee reads, fixtures, user requests, acceptance criteria, issue or PR discussion, docs, git history, browser observations, DOM/layout inspection, contract tests, or UI observations. If the conclusion relies only on naming, local shape, or vibes, inspect one more independent source before acting.
+- `Strong enough`: one strong signal or two independent weaker signals, with no unresolved alternative that would change the claim, finding, edit, implementation direction, or completion statement.
+- `Weak`: plausible but thin evidence. Check one independent source before acting.
+- `Contradicted`: checked evidence conflicts with the theory. Drop or revise it.
+- `Unresolved`: evidence cannot be honestly classified. Resolve locally, audit when available, or ask the user.
 
-Avoid vague checkpoints like `Evidence checked: code` or `Next verification: run tests`. Name concrete files, commands, callers, callees, tests, logs, or UI observations, and choose verification specific enough to prove the next action.
+High-risk theories involving auth, privacy, data loss, migrations, cache, distributed state, async/concurrency, or API contracts usually need one strong signal plus targeted verification, or two independent signals. If stronger evidence is unavailable, state the limit explicitly.
 
-Before acting confidently, classify the theory. It is strong enough with one strong signal or two independent weaker signals and no unresolved alternative that would change the edit, finding, explanation, or implementation direction. For high-risk areas such as auth, data loss, migrations, cache, distributed state, async/concurrency, or API contracts, use one strong signal plus targeted verification or two independent signals unless stronger evidence is unavailable. A theory is not strong enough merely because supporting evidence exists; for non-mechanical or behavior-changing work, also consider what evidence would contradict it. If it is weak, contradicted, or unresolved, do not edit, state a root cause, publish a review finding, give a confident explanation, choose an implementation direction, or declare completion yet.
+Supporting evidence alone is not enough for non-mechanical work. Also consider what would contradict the theory. Naming, local shape, vibes, or a single isolated file are low confidence.
 
-For risky or ambiguous theories, use an independent evidence audit when uncertainty justifies the overhead and subagents are available: give a clean-context subagent only the symptom, available failing evidence, relevant files or commands, and the theory to challenge. The subagent should look for supporting evidence, contradicting evidence, missing evidence, and the next check; it should not implement the fix. Do not request an audit for every high checkpoint. If subagents are not available, inspect one more independent source or ask the user when the missing evidence is not locally discoverable.
+Do not edit, state a root cause, publish a review finding, give a confident explanation, choose an implementation direction, or declare completion while the relevant theory is Weak, Contradicted, or Unresolved.
 
-When requesting an independent evidence audit from `high` mode, include the high checkpoint fields when available: the assumption, outcome covered, expected confirming signal, expected contradicting signal, evidence checked so far, alternative theories if known, blast radius, and the direction being considered. The audit should independently test both signals and look for alternative theories that would change the edit, finding, explanation, or implementation direction. The audit result does not bypass the theory strength gate.
+## Evidence
 
-Checkpoint level controls how detailed the checkpoint is. It does not replace the theory strength gate, escalation rule, or independent evidence audit.
+Prefer the strongest cheap source: failing test, log, stack trace, compiler output, runtime observation, caller/callee path, existing tests or fixtures, acceptance criteria, issue/PR discussion, screenshot, browser observation, DOM/layout inspection, API docs, contract tests, recorded fixtures, git history, or docs.
 
-Keep actions scoped to what the evidence supports. Decide verification before implementation. Do not claim work is fixed or complete unless verification was actually run, or clearly state what was not verified. Before calling the task complete, verify each locked outcome invariant or explicitly state what remains unverified. Static checks can verify code health, but they do not verify visual layout unless paired with a screenshot, browser, DOM/layout inspection, or an explicit visual test.
+Name concrete evidence: command, file, test, log, caller, callee, schema, fixture, doc, contract, or UI observation.
+
+Stop once the next small action is justified. Expand only when evidence contradicts the theory, exposes shared behavior, leaves outcome invariants uncovered, or the blast radius requires stronger evidence.
+
+## Escalation
+
+If evidence is weak, check one independent source. If two evidence-expansion rounds leave multiple plausible theories and the choice would change the claim, finding, edit, direction, or scope, stop choosing.
+
+When the missing evidence is checkable, inspect another source or use an independent evidence audit when the environment and user permissions allow subagents. If delegation is unavailable or not permitted, do the independent check yourself.
+
+Ask the user when the missing evidence is about intended behavior, product requirements, acceptable scope, or another decision local artifacts cannot answer.
+
+## Task Cards
+
+- Debugging: require a reproducible signal or state why reproduction is unavailable; inspect caller/callee before the first fix.
+- Code review: a finding needs a concrete failure mode, trigger, affected path, and impact.
+- Explanation: separate "the code shows" from "this likely means"; check another source for unfamiliar shared behavior.
+- Implementation: name edit scope and deliberate non-scope; make the smallest evidence-supported change.
+- Completion: verify every locked invariant or state what remains unverified. Static checks do not verify visual layout without screenshot, browser, DOM/layout inspection, or visual test evidence.

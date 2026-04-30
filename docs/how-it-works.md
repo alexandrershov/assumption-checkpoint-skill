@@ -1,14 +1,31 @@
 # How It Works
 
-The skill adds lightweight checkpoints around risky moments:
+The skill turns risky agent confidence into a short evidence gate.
 
-- before narrowing a broad or multi-part request into one theory;
-- before stating a root cause;
-- before making a review finding or choosing an implementation direction;
-- before editing code based on a mental model;
-- before calling a change complete.
+It starts with four invariants:
 
-Each checkpoint uses this format:
+- confident claims name concrete evidence;
+- behavior-changing edits stay scoped to evidence;
+- weak, contradicted, or unresolved theories get more evidence, narrower scope, audit, or a user decision;
+- completion claims require concrete verification or an explicit verification limit.
+
+## Risk Router
+
+The agent selects the cheapest checkpoint level that fits the risk:
+
+- `low` for mechanical edits that cannot change runtime behavior;
+- `normal` for ordinary debugging, code changes, reviews, explanations, and implementation decisions;
+- `high` for meaningful risk, ambiguous evidence, shared behavior, auth, data, cache, async, API, UI, flaky bugs, broad refactors, incidents, or user-visible regressions.
+
+User-selected levels are minimum strictness levels. The agent may escalate but must not downgrade.
+
+## Checkpoints
+
+The agent pauses before narrowing a broad request, stating a root cause, making a review finding, choosing an implementation direction, editing from a mental model, or calling work complete.
+
+Before narrowing, it locks the user-visible outcome. Multi-part requests become observable invariants so a theory cannot explain one part and silently replace the whole task.
+
+The normal checkpoint is:
 
 ```text
 Assumption:
@@ -19,58 +36,22 @@ Remaining risk:
 Next verification:
 ```
 
-The evidence should point to a concrete source: a failing test, log, stack trace, compiler output, caller, callee, fixture, acceptance criteria, issue or PR discussion, documentation, git history, browser observation, layout inspection, contract test, or UI observation.
+High checkpoints also name confirming and contradicting signals, alternatives, and blast radius.
 
-The workflow is:
+## Theory Gate
 
-1. Restate the task as an observable outcome.
-2. Lock the user-visible outcome before narrowing the theory. For multi-part requests, split the outcome into observable invariants.
-3. Name the assumption that could be wrong.
-4. Check the nearest reliable source of truth.
-5. Classify the theory as strong enough, weak, contradicted, or unresolved before acting confidently.
-6. Identify the possible blast radius.
-7. Limit the edit scope to what the evidence supports.
-8. Make the smallest justified change.
-9. Verify with the narrowest meaningful check first.
+A theory is strong enough only when it has one strong signal or two independent weaker signals, and no unresolved alternative would change the claim, finding, edit, implementation direction, or completion statement.
 
-Outcome invariants describe visible or testable behavior, not implementation. A narrowed theory may explain one invariant, but it must not replace the full outcome. Before completion, each locked invariant should be verified, deferred, or explicitly called out as unverified.
+For high-risk areas such as auth, privacy, data loss, migrations, cache, distributed state, async/concurrency, or API contracts, the agent usually needs one strong signal plus targeted verification or two independent signals.
 
-For mechanical edits that cannot change runtime behavior, the skill allows a shorter checkpoint: assumption plus verification.
+If evidence is weak, contradicted, or unresolved, the agent should not act confidently. It checks one more independent source, narrows scope, asks the user when intent or scope is missing, or uses an independent evidence audit when the environment and user permissions allow it.
 
-Checkpoint visibility is intentional. The checkpoint is primarily an internal agent discipline, not a transcript format. The agent should surface a full checkpoint only when it affects trust, risk, scope, expectations, verification limits, or a user decision. High checkpoints are mandatory as discipline, but routine high checkpoints can be surfaced as short summaries. Low-risk mechanical work usually needs only a short working update.
+## Visibility
 
-The skill supports three checkpoint levels:
+Checkpoints are primarily internal. The agent surfaces a brief checkpoint when it affects trust, risk, scope, expectations, verification limits, or a user decision.
 
-- `assumption-checkpoint:low` uses the compressed checkpoint only for low-risk mechanical edits that cannot change runtime behavior.
-- `assumption-checkpoint:normal` is the default standard checkpoint for ordinary debugging, code changes, reviews, explanations, and implementation decisions.
-- `assumption-checkpoint:high` adds expected confirming and contradicting signals, alternative theories, and blast radius for ambiguous, shared, high-risk, visual, integration, or behavior-changing work.
+A checkpoint is useful only if it changes or confirms the next action: what to inspect, edit, leave alone, ask, or verify.
 
-If the user specifies a level, that level is the minimum strictness. The agent must not downgrade it, but may escalate to `high` when risk, ambiguity, weak evidence, unresolved alternatives, shared/runtime behavior, or user request makes deeper checking useful.
+## Task Cards
 
-A theory is strong enough when it has one strong signal, such as a failing test, log, stack trace, compiler output, or runtime observation, or two independent weaker signals, such as a caller/callee read plus an existing fixture or doc. For high-risk areas such as auth, data loss, migrations, cache, distributed state, async/concurrency, or API contracts, use one strong signal plus targeted verification or two independent signals unless stronger evidence is unavailable.
-
-A theory can be strong enough only for the outcome invariant it explains. If other locked invariants remain unexplained, the task is not fully diagnosed yet.
-
-For non-mechanical or behavior-changing work, supporting evidence is not enough by itself. A useful theory should also name what evidence would contradict it; if no concrete contradicting signal can be named, treat the theory as weak or unresolved.
-
-If evidence is weak or unresolved, the agent must not act confidently yet. It should check one more independent source, ask for an independent evidence audit when uncertainty justifies the overhead and subagents are available, or ask the user when the missing evidence is about intended behavior or scope.
-
-When `high` mode requests an independent evidence audit, the agent includes the high checkpoint fields when available. The clean-context subagent should test both the expected confirming and expected contradicting signals, look for alternative theories, and return a verdict without implementing the fix. Audit is not required for every high checkpoint.
-
-If two rounds of evidence still leave multiple plausible theories and the edit, finding, explanation, or implementation direction would change, the skill tells the agent to stop instead of guessing.
-
-## Checkpoint Quality
-
-A poor checkpoint is vague and does not justify the next action:
-
-```text
-Evidence checked: Code.
-Next verification: Run tests.
-```
-
-A useful checkpoint names concrete sources and verification:
-
-```text
-Evidence checked: Failing test `parser.test.ts`, caller `loadItems()`, callee `parseItems()`.
-Next verification: Run `npm test -- parser.test.ts`, then the import flow test if parser behavior changes.
-```
+The skill includes short task cards for debugging, code review, explanations, implementation decisions, and completion. These cards keep the workflow concrete without forcing the full template into every user-visible message.
