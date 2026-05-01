@@ -1,3 +1,11 @@
+# Release 0.2.0 - 2026-05-01
+
+## Changes
+
+- Enabled OpenAI implicit invocation for `assumption-checkpoint` so the skill can act as an automatic safety net in matching coding contexts.
+- Expanded the OpenAI default prompt to cover debugging, code changes, code review, unfamiliar-code explanations, implementation decisions, and completion claims.
+- Bumped package, Gemini extension, Claude plugin, and Cursor plugin metadata to `0.2.0`.
+
 # Release 0.1.0 - 2026-04-30
 
 ## Changes

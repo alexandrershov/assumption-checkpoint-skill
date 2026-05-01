@@ -127,7 +127,7 @@ If the plugin is published to the Cursor Marketplace, it can be installed from C
 - `.cursor-plugin/marketplace.json` lists the Cursor plugin for marketplace publishing.
 - `cursor-plugin/.cursor-plugin/plugin.json` makes the Cursor plugin package.
 - `.cursor/rules/assumption-checkpoint.mdc` provides a Cursor project-rule fallback.
-- `assumption-checkpoint/agents/openai.yaml` defines the OpenAI-facing display name, prompt, and invocation policy.
+- `assumption-checkpoint/agents/openai.yaml` defines the OpenAI-facing display name, prompt, and automatic invocation policy.
 - `scripts/check-sync.sh` verifies bundled skill and Cursor rule copies are synchronized.
 - `docs/evals/assumption-checkpoint-scenarios.md` contains pressure scenarios for A/B testing skill behavior.
 
@@ -142,5 +142,5 @@ This checks that the canonical skill, Gemini/Claude/Cursor bundled skill copies,
 ## Default Prompt
 
 ```text
-Use $assumption-checkpoint while diagnosing or changing code so early confidence becomes checked evidence.
+Use $assumption-checkpoint while diagnosing bugs, changing code, reviewing code, explaining unfamiliar code, making implementation decisions, or calling work complete so early confidence becomes checked evidence.
 ```
