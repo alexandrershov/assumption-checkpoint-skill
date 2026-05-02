@@ -6,7 +6,7 @@
 
 `assumption-checkpoint` is a Codex skill for safer coding decisions. It makes the agent pause before confident actions, choose a risk level, and check the nearest reliable evidence first.
 
-Use it when debugging, changing code, reviewing code, explaining unfamiliar code, or making implementation decisions where hidden assumptions can cause mistakes.
+Use it when debugging, changing code, reviewing code, explaining unfamiliar code, making implementation decisions, or calling work complete where hidden assumptions can cause mistakes.
 
 ## How It Works
 
@@ -18,8 +18,9 @@ The skill adds lightweight checkpoints at risky moments:
 - before editing code based on a mental model;
 - before calling a change complete.
 
-The skill now starts from four outcome invariants:
+The skill now starts from five outcome invariants:
 
+- checkpoints authorize the next small action;
 - confident claims name concrete evidence;
 - behavior-changing edits stay scoped to evidence;
 - weak, contradicted, or unresolved theories get more evidence, narrower scope, audit, or a user decision;
@@ -27,9 +28,9 @@ The skill now starts from four outcome invariants:
 
 It uses a compact risk router:
 
-- `assumption-checkpoint:low` for mechanical edits that cannot change runtime behavior;
+- `assumption-checkpoint:low` for mechanical edits that cannot change runtime behavior, including only inert metadata sync;
 - `assumption-checkpoint:normal` for ordinary debugging, code changes, reviews, explanations, and implementation decisions;
-- `assumption-checkpoint:high` for ambiguous, shared, high-risk, visual, integration, or behavior-changing work.
+- `assumption-checkpoint:high` for ambiguous, shared, high-risk, visual-correctness, integration, or behavior-changing work.
 
 Each normal checkpoint answers:
 
@@ -38,6 +39,7 @@ Assumption:
 Outcome covered:
 Evidence checked:
 Theory strength: Strong enough / Weak / Contradicted / Unresolved
+Supported next action:
 Remaining risk:
 Next verification:
 ```
@@ -48,7 +50,11 @@ The checkpoint is primarily an internal agent discipline, not a transcript forma
 
 The skill classifies each theory as strong enough, weak, contradicted, or unresolved before confident action. Weak or unresolved theories require one more independent check, a clean-context evidence audit when uncertainty justifies the overhead, or a user decision when the missing evidence is about intended behavior or scope.
 
+Weak theories can justify evidence-gathering changes such as failing tests, temporary instrumentation, or reversible spikes, but not behavior-changing fixes or completion claims.
+
 Before narrowing a theory, the agent locks the user-visible outcome. Multi-part requests are split into observable invariants so a theory can explain one part of the task without quietly replacing the whole task.
+
+Checkpoints are reused only while outcome, evidence, scope, and next action remain unchanged.
 
 User-selected levels are treated as the minimum strictness level. The agent may escalate to `high`, but must not downgrade.
 
@@ -59,11 +65,13 @@ When `high` uses an independent evidence audit, the agent passes the high checkp
 - Separates facts from guesses before confident claims, findings, decisions, or code changes.
 - Forces evidence from tests, logs, stack traces, callers, callees, docs, UI observations, acceptance criteria, or git history.
 - Classifies theory strength before action instead of treating evidence as a vague note.
+- Names the supported next action so local evidence does not accidentally authorize broad edits.
 - Names what would confirm and what would contradict high-risk theories.
 - Lets clean-context audits challenge high-risk theories using the same confirming and contradicting signals.
 - Escalates risky or ambiguous theories to independent evidence audit when local checking is not enough.
 - Keeps edits scoped to what the evidence supports.
 - Keeps narrowed theories tied to the full user-visible outcome.
+- Revises stale checkpoints when evidence, scope, intent, or next action changes.
 - Uses task cards for debugging, review, explanation, implementation, and completion.
 - Defines verification before implementation.
 - Prevents “looks fixed” claims when tests or checks were not actually run.
