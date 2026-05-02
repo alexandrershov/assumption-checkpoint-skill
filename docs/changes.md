@@ -1,3 +1,15 @@
+# Release 0.3.0 - 2026-05-02
+
+## Changes
+
+- Added `Supported next action` to normal and high checkpoints so checked evidence authorizes a concrete next step.
+- Clarified low/high risk routing for metadata and visual/UI work.
+- Defined strong, weak, and independent signals in the Theory Strength Gate.
+- Allowed evidence-gathering changes for weak theories only when labeled as investigation and followed by verification or cleanup.
+- Added checkpoint lifecycle guidance for stale evidence, expanded scope, changed intent, and changed next action.
+- Strengthened task cards for code review, explanation, and completion.
+- Added eval scenarios for metadata sync, investigation-only edits, and stale checkpoints.
+
 # Release 0.2.0 - 2026-05-01
 
 ## Changes

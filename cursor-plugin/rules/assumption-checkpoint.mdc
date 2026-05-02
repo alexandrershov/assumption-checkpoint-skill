@@ -1,5 +1,5 @@
 ---
-description: Use Assumption Checkpoint when diagnosing bugs, changing code, reviewing code, explaining unfamiliar code, or making implementation decisions.
+description: Use Assumption Checkpoint when diagnosing bugs, changing code, reviewing code, explaining unfamiliar code, making implementation decisions, or calling work complete.
 alwaysApply: false
 ---
 
@@ -9,11 +9,11 @@ Use Assumption Checkpoint as a decision gate before confident claims, findings, 
 
 Default to `assumption-checkpoint:normal`. Treat a user-selected level as the minimum strictness and never downgrade it.
 
-- `low`: only mechanical edits that cannot change runtime behavior, such as typos, docs wording, labels, metadata sync, or formatting. Use 1-2 lines.
+- `low`: only mechanical edits that cannot change runtime behavior, such as typos, docs wording, labels, formatting, or metadata sync that cannot affect loading, routing, packaging, publishing, permissions, or runtime behavior. Use 1-2 lines.
 - `normal`: ordinary debugging, code changes, reviews, explanations, and implementation decisions. Usually keep the checkpoint internal and short.
-- `high`: use when evidence is ambiguous, alternatives would change the edit, or the task touches shared behavior, auth, permissions, privacy, persistence, migrations, cache, distributed state, async/concurrency, retries, queues, API contracts, external integrations, UI/visual behavior, flaky bugs, broad refactors, incidents, or user-visible regressions.
+- `high`: use when evidence is ambiguous, alternatives would change the edit, or the task touches shared behavior, auth, permissions, privacy, persistence, migrations, cache, distributed state, async/concurrency, retries, queues, API contracts, external integrations, UI/visual behavior when correctness depends on layout, responsive state, accessibility, interaction state, screenshot/browser evidence, flaky bugs, broad refactors, incidents, or user-visible regressions.
 
-Do not use `low` for behavior changes, debugging, root-cause claims, shared code, persistence, cache, auth, async behavior, migrations, API contracts, test logic, or completion claims after code changes.
+Do not use `low` for behavior changes, debugging, root-cause claims, shared code, persistence, cache, auth, async behavior, migrations, API contracts, test logic, metadata that affects loading, routing, packaging, publishing, permissions, or runtime behavior, or completion claims after code changes.
 
 ## Pause Points
 
@@ -25,7 +25,11 @@ Before narrowing, lock the user-visible outcome. For multi-part requests, split 
 
 Prefer internal checkpoints. Surface a brief checkpoint when it affects trust, risk, scope, expectations, verification limits, or a user decision. Surface at least a short summary when the theory is Weak, Contradicted, or Unresolved; intended behavior or scope is missing; verification cannot run; or checked evidence changes the next action.
 
-A checkpoint must change or confirm what to inspect, edit, leave alone, ask, or verify. If it does none of those, it is ceremony.
+A checkpoint must authorize what to inspect, edit, leave alone, ask, or verify next. If it does none of those, it is ceremony.
+
+## Lifecycle
+
+Reuse a checkpoint only while the outcome, evidence, scope, and next action remain unchanged. Revise it when new evidence contradicts it, scope expands, user intent changes, the next action changes, or verification exposes a new invariant.
 
 ## Formats
 
@@ -43,6 +47,7 @@ Assumption:
 Outcome covered:
 Evidence checked:
 Theory strength: Strong enough / Weak / Contradicted / Unresolved
+Supported next action:
 Remaining risk:
 Next verification:
 ```
@@ -56,6 +61,7 @@ Expected confirming signal:
 Expected contradicting signal:
 Evidence checked:
 Theory strength: Strong enough / Weak / Contradicted / Unresolved
+Supported next action:
 Alternative theories:
 Blast radius:
 Remaining risk:
@@ -73,11 +79,15 @@ Classify the theory before any confident action:
 - `Contradicted`: checked evidence conflicts with the theory. Drop or revise it.
 - `Unresolved`: evidence cannot be honestly classified. Resolve locally, audit when available, or ask the user.
 
+Strong signals directly reproduce, explain, or verify the outcome, such as failing tests, runtime observations, stack traces, compiler output, contracts, schemas, fixtures, or targeted verification. Weak signals support the theory indirectly, such as naming, local shape, adjacent code, partial caller/callee reads, or git history. Independent signals come from different sources or execution paths.
+
 High-risk theories involving auth, privacy, data loss, migrations, cache, distributed state, async/concurrency, or API contracts usually need one strong signal plus targeted verification, or two independent signals. If stronger evidence is unavailable, state the limit explicitly.
 
 Supporting evidence alone is not enough for non-mechanical work. Also consider what would contradict the theory. Naming, local shape, vibes, or a single isolated file are low confidence.
 
-Do not edit, state a root cause, publish a review finding, give a confident explanation, choose an implementation direction, or declare completion while the relevant theory is Weak, Contradicted, or Unresolved.
+Do not make behavior-changing edits, state a root cause, publish a review finding, give a confident explanation, choose an implementation direction, or declare completion while the relevant theory is Weak, Contradicted, or Unresolved.
+
+Evidence-gathering changes, such as failing tests, instrumentation, or reversible spikes, are allowed only as investigation and must be verified or cleaned up.
 
 ## Evidence
 
@@ -98,7 +108,7 @@ Ask the user when the missing evidence is about intended behavior, product requi
 ## Task Cards
 
 - Debugging: require a reproducible signal or state why reproduction is unavailable; inspect caller/callee before the first fix.
-- Code review: a finding needs a concrete failure mode, trigger, affected path, and impact.
-- Explanation: separate "the code shows" from "this likely means"; check another source for unfamiliar shared behavior.
+- Code review: a finding needs a concrete failure mode, trigger, affected path, impact, and evidence; do not convert concern into a finding when trigger or impact remains hypothetical.
+- Explanation: separate "the code shows" from "this likely means"; check another source for unfamiliar shared behavior; state intent as inference unless a second source supports it.
 - Implementation: name edit scope and deliberate non-scope; make the smallest evidence-supported change.
-- Completion: verify every locked invariant or state what remains unverified. Static checks do not verify visual layout without screenshot, browser, DOM/layout inspection, or visual test evidence.
+- Completion: verify every locked invariant, not only a broad test command, or state what remains unverified. Static checks do not verify visual layout without screenshot, browser, DOM/layout inspection, or visual test evidence.
