@@ -1,7 +1,7 @@
 interface:
   display_name: "Assumption Checkpoint"
   short_description: "Check coding assumptions against evidence"
-  default_prompt: "Use $assumption-checkpoint while diagnosing or changing code so early confidence becomes checked evidence."
+  default_prompt: "Use $assumption-checkpoint while diagnosing bugs, changing code, reviewing code, explaining unfamiliar code, making implementation decisions, or calling work complete so early confidence becomes checked evidence."
 
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

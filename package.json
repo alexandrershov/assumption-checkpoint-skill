@@ -1,6 +1,6 @@
 {
   "name": "assumption-checkpoint-skill",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Evidence-first agent skill for checking coding assumptions before acting.",
   "homepage": "https://github.com/alexandrershov/assumption-checkpoint-skill#readme",
   "bugs": {
