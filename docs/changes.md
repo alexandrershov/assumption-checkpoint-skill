@@ -1,3 +1,13 @@
+# Release 0.4.0 - 2026-05-13
+
+## Changes
+
+- Added fast-path guidance for compact routine checkpoints.
+- Added an anti-ritual guard to reject vague evidence, vague verification, and unsupported `Strong enough` classifications.
+- Added domain evidence cards for auth, persistence, cache, async, UI, and external API work.
+- Added structured eval scenarios and validation.
+- Added metadata version validation and `npm run check:all`.
+
 # Release 0.3.0 - 2026-05-02
 
 ## Changes

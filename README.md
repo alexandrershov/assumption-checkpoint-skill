@@ -48,6 +48,8 @@ For low-risk mechanical edits, it can use a shorter form: assumption plus verifi
 
 The checkpoint is primarily an internal agent discipline, not a transcript format. The agent should surface full checkpoints only when they affect trust, risk, scope, expectations, verification limits, or a user decision. High checkpoints are mandatory as discipline, but routine high checkpoints can be surfaced as short summaries instead of full templates.
 
+Routine `normal` checkpoints can use a fast path: assumption, evidence checked, supported next action, and next verification. The skill rejects ritual checkpoints whose evidence, next action, theory strength, or verification is too vague to authorize useful work.
+
 The skill classifies each theory as strong enough, weak, contradicted, or unresolved before confident action. Weak or unresolved theories require one more independent check, a clean-context evidence audit when uncertainty justifies the overhead, or a user decision when the missing evidence is about intended behavior or scope.
 
 Weak theories can justify evidence-gathering changes such as failing tests, temporary instrumentation, or reversible spikes, but not behavior-changing fixes or completion claims.
@@ -76,6 +78,10 @@ When `high` uses an independent evidence audit, the agent passes the high checkp
 - Defines verification before implementation.
 - Prevents “looks fixed” claims when tests or checks were not actually run.
 - Reduces performative checkpoints by requiring concrete sources and useful next verification.
+- Keeps routine checkpoints compact through a fast path.
+- Rejects ritual checkpoints whose evidence or next verification is vague.
+- Provides domain-specific evidence targets for auth, migrations, cache, async, UI, and external APIs.
+- Makes eval scenarios easier to rerun and compare across revisions.
 
 ## Mini Docs
 
@@ -137,15 +143,18 @@ If the plugin is published to the Cursor Marketplace, it can be installed from C
 - `.cursor/rules/assumption-checkpoint.mdc` provides a Cursor project-rule fallback.
 - `assumption-checkpoint/agents/openai.yaml` defines the OpenAI-facing display name, prompt, and automatic invocation policy.
 - `scripts/check-sync.sh` verifies bundled skill and Cursor rule copies are synchronized.
+- `scripts/check-versions.sh` verifies package metadata versions are synchronized.
+- `scripts/check-eval-scenarios.js` verifies eval scenario records are structurally complete.
 - `docs/evals/assumption-checkpoint-scenarios.md` contains pressure scenarios for A/B testing skill behavior.
+- `docs/evals/scenarios.json` contains the machine-readable eval scenario index.
 
 ## Validation
 
 ```bash
-npm run check:sync
+npm run check:all
 ```
 
-This checks that the canonical skill, Gemini/Claude/Cursor bundled skill copies, and Cursor rule copies are synchronized.
+This checks that canonical and bundled skill copies stay synchronized, package metadata versions match, and eval scenario records remain structurally complete.
 
 ## Default Prompt
 
