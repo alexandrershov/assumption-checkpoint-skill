@@ -54,6 +54,10 @@ Checkpoints are primarily internal. The agent surfaces a brief checkpoint when i
 
 A checkpoint is useful only if it authorizes the next action: what to inspect, edit, leave alone, ask, or verify.
 
+## Fast Path and Anti-Ritual Guard
+
+Routine checkpoints should usually stay internal and compact: assumption, evidence, supported next action, and next verification. The skill rejects checkpoints that use vague evidence, vague verification, unsupported `Strong enough` classifications, or user-visible ceremony that does not affect trust, scope, risk, expectations, verification limits, or a user decision.
+
 ## Lifecycle
 
 The agent reuses a checkpoint only while the outcome, evidence, scope, and next action remain unchanged. New contradictory evidence, expanded scope, changed user intent, changed next action, or newly exposed invariants require a revised checkpoint.

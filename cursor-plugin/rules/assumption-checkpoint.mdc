@@ -27,6 +27,14 @@ Prefer internal checkpoints. Surface a brief checkpoint when it affects trust, r
 
 A checkpoint must authorize what to inspect, edit, leave alone, ask, or verify next. If it does none of those, it is ceremony.
 
+## Fast Path and Anti-Ritual Guard
+
+For routine normal work, keep the checkpoint internal and compact: assumption, evidence checked, supported next action, and next verification.
+
+A checkpoint fails when evidence is vague, the next action only repeats the assumption, `Strong enough` relies only on naming/local shape/one file, verification is vague despite a narrower check, or user-visible ceremony does not affect trust, risk, scope, expectations, verification limits, or a user decision.
+
+When it fails, check one independent source, narrow the claim, ask for missing intent, or drop the confident action.
+
 ## Lifecycle
 
 Reuse a checkpoint only while the outcome, evidence, scope, and next action remain unchanged. Revise it when new evidence contradicts it, scope expands, user intent changes, the next action changes, or verification exposes a new invariant.
@@ -104,6 +112,15 @@ If evidence is weak, check one independent source. If two evidence-expansion rou
 When the missing evidence is checkable, inspect another source or use an independent evidence audit when the environment and user permissions allow subagents. If delegation is unavailable or not permitted, do the independent check yourself.
 
 Ask the user when the missing evidence is about intended behavior, product requirements, acceptable scope, or another decision local artifacts cannot answer.
+
+## Domain Evidence Cards
+
+- Auth/permissions: check server policy, API guard, role/tenant behavior, and audit path.
+- Persistence/migrations: check schema, migration tests, deploy order, rollback, and old-version callers.
+- Cache/distributed state: check query key, invalidation path, cache layer, region, and stale-replica behavior.
+- Async/retries/queues: check deterministic signal, worker lifecycle, retry config, logs, awaits, and leaked state.
+- UI/visual correctness: check screenshot/browser/DOM/layout evidence for each responsive or interaction invariant.
+- External APIs: check official docs, recorded fixtures, contract tests, signature/header/body examples, and provider mode/version.
 
 ## Task Cards
 

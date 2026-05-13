@@ -66,6 +66,36 @@ Avoid full templates for routine work:
 
 A checkpoint must change or confirm the next action. Use the core invariant as the budget: if the checkpoint does not authorize what to inspect, edit, leave alone, ask, or verify next, it is ceremony.
 
+## Fast Path
+
+For routine `normal` work, the checkpoint can stay as one internal sentence:
+
+```text
+Assumption -> evidence checked -> supported next action -> next verification.
+```
+
+Use the full fields only when they change the decision, expose uncertainty, define scope, or explain a verification limit. Do not spend more text on the checkpoint than on the next useful action it authorizes.
+
+Fast path order:
+
+1. Name the user-visible outcome or invariant affected by the next action.
+2. Check the nearest reliable evidence source.
+3. Classify the theory honestly.
+4. Act only within the supported scope.
+5. Verify the locked outcome or state the exact verification limit.
+
+## Anti-Ritual Guard
+
+A checkpoint fails its purpose when any of these are true:
+
+- `Evidence checked` is vague, such as "code", "logic", "looks right", or "local testing".
+- `Supported next action` merely repeats the assumption instead of authorizing a concrete inspect, edit, ask, leave-alone, or verify step.
+- `Theory strength` is `Strong enough` but the evidence is only naming, local shape, one isolated file, or vibes.
+- `Next verification` is vague, such as "run tests", when a narrower meaningful command or observation is available.
+- The checkpoint is user-visible but does not affect trust, risk, scope, expectations, verification limits, or a user decision.
+
+When a checkpoint fails this guard, do the nearest independent check, narrow the claim, ask for missing product intent, or drop the confident action.
+
 ## Checkpoint Lifecycle
 
 Reuse a checkpoint only while the outcome, evidence, scope, and next action remain unchanged.
@@ -130,7 +160,7 @@ Weak signal: supports the theory indirectly, such as naming, local shape, adjace
 
 Independent signals: come from different sources or execution paths. Two observations of the same assumption are not independent.
 
-High-risk theories involving auth, privacy, data loss, migrations, cache, distributed state, async/concurrency, or API contracts usually need one strong signal plus targeted verification, or two independent signals. If stronger evidence is unavailable, state the limit explicitly.
+High-risk theories involving auth, privacy, data loss, migrations, cache, distributed state, async/concurrency, or API contracts usually need one strong signal plus targeted verification, or two independent signals. Use the Domain Evidence Cards to choose the cheapest confirming and contradicting sources for the specific risk area. If stronger evidence is unavailable, state the limit explicitly.
 
 Supporting evidence is not enough by itself for non-mechanical work. Also name what would contradict the theory. If no concrete contradicting signal can be named, treat the theory as `Weak` or `Unresolved`.
 
@@ -165,6 +195,19 @@ Prefer the strongest cheap evidence available:
 Evidence checked must name the concrete source: command, file, test, log, caller, callee, schema, fixture, doc, contract, or UI observation.
 
 Stop once the next small action is justified for the risk level. Expand only when the checked source contradicts the theory, exposes shared behavior, leaves outcome invariants uncovered, or the blast radius requires stronger evidence.
+
+## Domain Evidence Cards
+
+Use these as quick evidence targets when the domain raises risk:
+
+| Domain | Confirm with | Contradict with |
+| --- | --- | --- |
+| Auth or permissions | Server-side policy, route/API guard, audit requirement, forbidden-path test | A caller bypasses the checked guard, missing audit trail, or policy differs by role/tenant |
+| Persistence or migrations | Schema, migration test, deploy-order constraint, rollback/data-preservation check | Background job, old app version, or query path still expects the old shape |
+| Cache or distributed state | Query key/source of truth, invalidation path, runtime/log observation | Another writer/reader uses a different key, cache layer, region, or stale replica |
+| Async, retries, queues | Deterministic failing signal, worker lifecycle, retry/backoff config, log timing | Missing await, leaked worker state, duplicate consumer, or scheduler behavior explains the symptom |
+| UI or visual correctness | Screenshot/browser/DOM/layout observation for each responsive or interaction invariant | Static checks pass while layout, focus, hit target, overflow, or accessibility state fails |
+| External API contract | Official docs, recorded fixture, contract test, signature/header/body example | Provider version, webhook mode, region, sandbox/live difference, or recorded fixture disagrees |
 
 ## Escalation
 

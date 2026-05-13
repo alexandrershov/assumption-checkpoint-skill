@@ -1,6 +1,6 @@
 {
   "name": "assumption-checkpoint-skill",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Evidence-first agent skill for checking coding assumptions before acting.",
   "homepage": "https://github.com/alexandrershov/assumption-checkpoint-skill#readme",
   "bugs": {
@@ -13,6 +13,9 @@
   "license": "ISC",
   "author": "alexandrershov",
   "scripts": {
-    "check:sync": "bash scripts/check-sync.sh"
+    "check:sync": "bash scripts/check-sync.sh",
+    "check:versions": "bash scripts/check-versions.sh",
+    "check:evals": "node scripts/check-eval-scenarios.js",
+    "check:all": "npm run check:sync && npm run check:versions && npm run check:evals"
   }
 }

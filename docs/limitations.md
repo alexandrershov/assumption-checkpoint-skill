@@ -13,6 +13,7 @@ Possible issues:
 - It cannot replace reproduction, failing tests, review evidence, or final verification.
 - It can still miss hidden coupling when the inspected source is too narrow.
 - Independent evidence audits depend on platform support, user permission, and the quality of the context passed to the reviewer.
+- Domain evidence cards improve evidence selection, but they are still prompts for judgment. They do not prove coverage unless the agent checks the relevant caller, contract, test, runtime signal, or user-visible invariant.
 
 The main failure mode is treating the checkpoint as documentation instead of a decision point. A good checkpoint authorizes what to inspect, edit, leave alone, ask, or verify next.
 
