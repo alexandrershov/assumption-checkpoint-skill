@@ -14,9 +14,11 @@ Possible issues:
 - It can still miss hidden coupling when the inspected source is too narrow.
 - Independent evidence audits depend on platform support, user permission, and the quality of the context passed to the reviewer.
 - Domain evidence cards improve evidence selection, but they are still prompts for judgment. They do not prove coverage unless the agent checks the relevant caller, contract, test, runtime signal, or user-visible invariant.
+- Concrete evidence targets can still be overfit to known eval traps. Re-run paraphrased scenarios so the agent learns the principle, not only the keywords.
+- Official/provider contract checks depend on network access or local fixtures. If neither is available, the agent must state the exact contract evidence it could not inspect.
 
 The main failure mode is treating the checkpoint as documentation instead of a decision point. A good checkpoint authorizes what to inspect, edit, leave alone, ask, or verify next.
 
 Another failure mode is over-sharing. The skill is primarily internal agent discipline; user-visible checkpoints should appear only when they affect trust, risk, scope, expectations, verification limits, or a user decision.
 
-For best results, keep checkpoints short and concrete. Use one strong signal or two independent weaker signals before moving forward, revise stale checkpoints when scope or evidence changes, and require stronger evidence for high-risk areas such as auth, data loss, migrations, cache, distributed state, async/concurrency, and API contracts. Weak theories may justify failing tests, instrumentation, or reversible spikes, but not behavior-changing fixes or completion claims.
+For best results, keep checkpoints short and concrete. Use one strong signal or two independent weaker signals before moving forward, revise stale checkpoints when scope or evidence changes, and require named artifacts for high-risk areas such as auth, data loss, migrations, cache, distributed state, async/concurrency, API contracts, shared helper outputs, visual invariants, and release metadata. Weak theories may justify failing tests, instrumentation, or reversible spikes, but not behavior-changing fixes or completion claims.

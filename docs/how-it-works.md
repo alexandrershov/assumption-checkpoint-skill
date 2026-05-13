@@ -46,6 +46,8 @@ A theory is strong enough only when it has one strong signal or two independent 
 
 For high-risk areas such as auth, privacy, data loss, migrations, cache, distributed state, async/concurrency, or API contracts, the agent usually needs one strong signal plus targeted verification or two independent signals.
 
+High-risk evidence must name the artifact that could support or kill the theory. "Logs", "tests", "contract", or "callers" are categories, not evidence, unless paired with the exact command, file, fixture, provider document, header, query key, route, export surface, viewport, screenshot, or load check.
+
 If evidence is weak, contradicted, or unresolved, the agent should not act confidently. It checks one more independent source, narrows scope, asks the user when intent or scope is missing, or uses an independent evidence audit when the environment and user permissions allow it. Evidence-gathering edits are allowed only as investigation and must be verified or cleaned up.
 
 ## Visibility
@@ -65,3 +67,7 @@ The agent reuses a checkpoint only while the outcome, evidence, scope, and next 
 ## Task Cards
 
 The skill includes short task cards for debugging, code review, explanations, implementation decisions, and completion. These cards keep the workflow concrete without forcing the full template into every user-visible message.
+
+## Domain Targets
+
+The domain cards bias the agent toward the trap-specific evidence: alternate cache-key invalidation, official provider docs and header/body examples, screenshot/browser/DOM evidence for every visual invariant, exported/email/API-facing callers for shared helpers, and version/manifest/load checks for metadata that affects packaging or activation.

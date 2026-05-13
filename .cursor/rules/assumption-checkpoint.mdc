@@ -76,7 +76,7 @@ Remaining risk:
 Next verification:
 ```
 
-High checkpoints must name concrete confirming and contradicting signals. If the contradicting signal appears, revise or drop the theory before acting.
+High checkpoints must name concrete confirming and contradicting signals. For high-risk domains, the signals must point at the specific artifact that can support or kill the theory: provider doc, header name, query key, caller path, route guard, migration path, export surface, viewport, screenshot, or command. If the contradicting signal appears, revise or drop the theory before acting.
 
 ## Theory Gate
 
@@ -101,7 +101,7 @@ Evidence-gathering changes, such as failing tests, instrumentation, or reversibl
 
 Prefer the strongest cheap source: failing test, log, stack trace, compiler output, runtime observation, caller/callee path, existing tests or fixtures, acceptance criteria, issue/PR discussion, screenshot, browser observation, DOM/layout inspection, API docs, contract tests, recorded fixtures, git history, or docs.
 
-Name concrete evidence: command, file, test, log, caller, callee, schema, fixture, doc, contract, or UI observation.
+Name concrete evidence: command, file, test, log, caller, callee, schema, fixture, doc, contract, or UI observation. In high-risk domains, broad words like "logs", "tests", "contract", "callers", or "local run" are not concrete evidence unless the exact artifact is named.
 
 Stop once the next small action is justified. Expand only when evidence contradicts the theory, exposes shared behavior, leaves outcome invariants uncovered, or the blast radius requires stronger evidence.
 
@@ -117,10 +117,12 @@ Ask the user when the missing evidence is about intended behavior, product requi
 
 - Auth/permissions: check server policy, API guard, role/tenant behavior, and audit path.
 - Persistence/migrations: check schema, migration tests, deploy order, rollback, and old-version callers.
-- Cache/distributed state: check query key, invalidation path, cache layer, region, and stale-replica behavior.
+- Cache/distributed state: check query key, invalidation path, alternate caller invalidation, cache layer, region, and stale-replica behavior.
 - Async/retries/queues: check deterministic signal, worker lifecycle, retry config, logs, awaits, and leaked state.
-- UI/visual correctness: check screenshot/browser/DOM/layout evidence for each responsive or interaction invariant.
-- External APIs: check official docs, recorded fixtures, contract tests, signature/header/body examples, and provider mode/version.
+- UI/visual correctness: check screenshot/browser/DOM/layout evidence for each responsive or interaction invariant, or explicitly state unobserved viewports/interactions.
+- External APIs: check official provider docs or changelog, recorded fixtures, contract tests, signature/header/body examples, and provider mode/version.
+- Shared helpers: check references, requested caller, and exports, emails, reports, or API-facing output.
+- Metadata/package work: check version sync, manifest/package validation, load or activation smoke checks, and publishing docs when relevant.
 
 ## Task Cards
 

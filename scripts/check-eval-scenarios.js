@@ -5,6 +5,7 @@ const file = path.join(__dirname, "..", "docs", "evals", "scenarios.json");
 const scenarios = JSON.parse(fs.readFileSync(file, "utf8"));
 
 const requiredStringFields = ["id", "name", "prompt", "trap", "expectedBehavior"];
+const validRiskLevels = new Set(["low", "normal", "high"]);
 const ids = new Set();
 const errors = [];
 
@@ -29,6 +30,20 @@ if (!Array.isArray(scenarios)) {
 
     if (!Array.isArray(scenario.scoringFocus) || scenario.scoringFocus.length < 3) {
       errors.push(`Scenario ${scenario.id} must have at least three scoringFocus entries`);
+    }
+
+    if (!validRiskLevels.has(scenario.expectedRisk)) {
+      errors.push(`Scenario ${scenario.id} must have expectedRisk: low, normal, or high`);
+    }
+
+    if (!Array.isArray(scenario.evidenceTargets) || scenario.evidenceTargets.length < 2) {
+      errors.push(`Scenario ${scenario.id} must have at least two concrete evidenceTargets`);
+    } else {
+      scenario.evidenceTargets.forEach((target, targetIndex) => {
+        if (typeof target !== "string" || target.trim() === "") {
+          errors.push(`Scenario ${scenario.id} has empty evidenceTargets entry ${targetIndex + 1}`);
+        }
+      });
     }
   });
 }

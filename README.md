@@ -80,7 +80,8 @@ When `high` uses an independent evidence audit, the agent passes the high checkp
 - Reduces performative checkpoints by requiring concrete sources and useful next verification.
 - Keeps routine checkpoints compact through a fast path.
 - Rejects ritual checkpoints whose evidence or next verification is vague.
-- Provides domain-specific evidence targets for auth, migrations, cache, async, UI, and external APIs.
+- Provides domain-specific evidence targets for auth, migrations, cache, async, UI, external APIs, shared helpers, and release metadata.
+- Requires exact high-risk artifacts such as provider docs, header names, query keys, caller paths, export surfaces, UI viewports, screenshots, package manifests, or validation commands.
 - Makes eval scenarios easier to rerun and compare across revisions.
 
 ## Mini Docs
@@ -154,7 +155,7 @@ If the plugin is published to the Cursor Marketplace, it can be installed from C
 npm run check:all
 ```
 
-This checks that canonical and bundled skill copies stay synchronized, package metadata versions match, and eval scenario records remain structurally complete.
+This checks that canonical and bundled skill copies stay synchronized, package metadata versions match, and eval scenario records include scoring focuses, expected risk levels, and concrete evidence targets.
 
 ## Default Prompt
 

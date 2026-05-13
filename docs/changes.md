@@ -1,3 +1,12 @@
+# Unreleased
+
+## Changes
+
+- Tightened high-risk evidence specificity so broad categories like "logs", "tests", "contract", or "callers" must name exact artifacts.
+- Expanded domain evidence cards for alternate cache invalidation, provider-owned API contract evidence, UI viewports, shared helper output surfaces, and loading/package metadata.
+- Added concrete bad/good examples for UI, external API, shared helper, and metadata evidence targets.
+- Extended eval scenario validation with expected risk levels and concrete evidence targets.
+
 # Release 0.4.0 - 2026-05-13
 
 ## Changes

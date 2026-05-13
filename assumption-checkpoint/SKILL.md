@@ -89,6 +89,7 @@ Fast path order:
 A checkpoint fails its purpose when any of these are true:
 
 - `Evidence checked` is vague, such as "code", "logic", "looks right", or "local testing".
+- For a high-risk domain, `Evidence checked` names only a category, such as "logs", "tests", "callers", or "contract", without the specific command, file, fixture, provider document, query key, header, route, export, UI viewport, or other artifact checked.
 - `Supported next action` merely repeats the assumption instead of authorizing a concrete inspect, edit, ask, leave-alone, or verify step.
 - `Theory strength` is `Strong enough` but the evidence is only naming, local shape, one isolated file, or vibes.
 - `Next verification` is vague, such as "run tests", when a narrower meaningful command or observation is available.
@@ -139,7 +140,7 @@ Remaining risk:
 Next verification:
 ```
 
-High checkpoints must name at least one concrete confirming signal and one concrete contradicting signal. If the contradicting signal appears, revise or drop the theory before acting.
+High checkpoints must name at least one concrete confirming signal and one concrete contradicting signal. For high-risk domains, the signals must point at the specific artifact that can support or kill the theory: provider doc, header name, query key, caller path, route guard, migration path, export surface, viewport, screenshot, or command. If the contradicting signal appears, revise or drop the theory before acting.
 
 ## Theory Strength Gate
 
@@ -192,7 +193,7 @@ Prefer the strongest cheap evidence available:
 | Git history or docs | Why behavior exists |
 | Naming and local shape | Last resort; low confidence |
 
-Evidence checked must name the concrete source: command, file, test, log, caller, callee, schema, fixture, doc, contract, or UI observation.
+Evidence checked must name the concrete source: command, file, test, log, caller, callee, schema, fixture, doc, contract, or UI observation. In high-risk domains, broad words like "logs", "tests", "contract", "callers", or "local run" are not concrete evidence unless the exact artifact is named.
 
 Stop once the next small action is justified for the risk level. Expand only when the checked source contradicts the theory, exposes shared behavior, leaves outcome invariants uncovered, or the blast radius requires stronger evidence.
 
@@ -204,10 +205,12 @@ Use these as quick evidence targets when the domain raises risk:
 | --- | --- | --- |
 | Auth or permissions | Server-side policy, route/API guard, audit requirement, forbidden-path test | A caller bypasses the checked guard, missing audit trail, or policy differs by role/tenant |
 | Persistence or migrations | Schema, migration test, deploy-order constraint, rollback/data-preservation check | Background job, old app version, or query path still expects the old shape |
-| Cache or distributed state | Query key/source of truth, invalidation path, runtime/log observation | Another writer/reader uses a different key, cache layer, region, or stale replica |
+| Cache or distributed state | Query key/source of truth, invalidation path, runtime/log observation | Another writer/reader uses a different key, alternate caller invalidates separately, cache layer, region, or stale replica |
 | Async, retries, queues | Deterministic failing signal, worker lifecycle, retry/backoff config, log timing | Missing await, leaked worker state, duplicate consumer, or scheduler behavior explains the symptom |
-| UI or visual correctness | Screenshot/browser/DOM/layout observation for each responsive or interaction invariant | Static checks pass while layout, focus, hit target, overflow, or accessibility state fails |
-| External API contract | Official docs, recorded fixture, contract test, signature/header/body example | Provider version, webhook mode, region, sandbox/live difference, or recorded fixture disagrees |
+| UI or visual correctness | Screenshot/browser/DOM/layout observation for each responsive or interaction invariant | Static checks pass while layout, focus, hit target, overflow, or accessibility state fails; an invariant or viewport remains unobserved |
+| External API contract | Official provider docs or changelog, provider-owned contract, recorded fixture, contract test, signature/header/body example | Provider version, webhook mode, region, sandbox/live difference, or recorded fixture disagrees; local logs or handler diff explain only the symptom |
+| Shared formatting or serialization helper | `rg`/reference search, direct callers, tests for the requested screen, export/email/report/API-facing output | A hidden caller formats externally visible output differently or relies on the old representation |
+| Loading, packaging, or release metadata | Version sync command, manifest/package validation, load/activation smoke check, publishing docs | Metadata is consumed by a loader, router, marketplace package, permission model, or runtime activation path not covered by the edit |
 
 ## Escalation
 
@@ -303,6 +306,22 @@ Alternative theories: Backend cache; UI subscribes to a different user id.
 Blast radius: Settings save flow and dashboard stats refresh.
 Remaining risk: Backend caching not checked.
 Next verification: Add targeted invalidation, run settings test, and manually confirm dashboard refresh if no test exists.
+```
+
+Concrete high-risk evidence targets:
+
+```text
+UI bad: Check tests.
+UI good: Playwright screenshot at 390px and DOM bounding boxes for both sibling inputs; Not verified: tablet viewport.
+
+External API bad: Check logs and webhook code.
+External API good: Failing webhook log with header value plus provider docs/changelog for the signature header format and a recorded fixture.
+
+Shared helper bad: Check the screen.
+Shared helper good: `rg formatDate`, requested screen caller, CSV export caller, email template caller, and the narrow screen test.
+
+Metadata bad: Update versions.
+Metadata good: `npm run check:versions`, `npm run check:sync`, manifest/package validation, and a load or activation smoke check when available.
 ```
 
 ## Red Flags

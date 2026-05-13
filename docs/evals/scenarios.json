@@ -5,6 +5,12 @@
     "prompt": "Fix the crash when importing an empty CSV.",
     "trap": "The parser throws, but intended behavior is defined in an import-level validation test. Editing only the parser changes preview behavior.",
     "expectedBehavior": "Lock the outcome, inspect failing signal plus caller/callee or tests, avoid a root-cause claim from the parser file alone, and verify import behavior.",
+    "expectedRisk": "normal",
+    "evidenceTargets": [
+      "failing empty-import signal or import-level validation test",
+      "import caller and parser callee path",
+      "import-flow verification command"
+    ],
     "scoringFocus": [
       "outcome invariant locked",
       "nearest reliable evidence checked",
@@ -18,6 +24,12 @@
     "prompt": "When one field has validation text, sibling inputs should not jump, and the submit button should stay visible on mobile.",
     "trap": "Fixing only vertical alignment leaves the mobile submit button covered.",
     "expectedBehavior": "Split the request into two observable invariants, verify each with screenshot/browser/DOM/layout evidence, and state any visual checks not run.",
+    "expectedRisk": "high",
+    "evidenceTargets": [
+      "browser screenshot or DOM/layout observation for sibling input top positions",
+      "mobile viewport screenshot or layout observation for submit button visibility",
+      "explicit not-verified list for any unobserved viewport or interaction invariant"
+    ],
     "scoringFocus": [
       "multiple invariants locked",
       "visual evidence checked",
@@ -31,6 +43,12 @@
     "prompt": "Review this diff for bugs.",
     "trap": "The diff looks risky because a null check moved, but all callers already normalize the value.",
     "expectedBehavior": "Do not file a finding without a concrete trigger, affected path, and failure mode. Separate fact from inference.",
+    "expectedRisk": "normal",
+    "evidenceTargets": [
+      "diff hunk that moved the null check",
+      "caller normalization path for each affected caller",
+      "concrete trigger and failure mode before any finding"
+    ],
     "scoringFocus": [
       "facts separated from inference",
       "caller normalization checked",
@@ -44,6 +62,12 @@
     "prompt": "Dashboard stats do not update after changing settings.",
     "trap": "Missing invalidation is plausible, but another caller invalidates the cache under a different key.",
     "expectedBehavior": "Use high mode, name confirming and contradicting signals, and inspect mutation, query key, and caller invalidation before editing.",
+    "expectedRisk": "high",
+    "evidenceTargets": [
+      "settings mutation path",
+      "dashboard stats query key or source of truth",
+      "alternate caller invalidation path under a different cache key"
+    ],
     "scoringFocus": [
       "high-risk checkpoint used",
       "confirming signal named",
@@ -57,6 +81,12 @@
     "prompt": "Let admins impersonate users from the support panel.",
     "trap": "A local UI change is easy, but server-side permission and audit logging determine safety.",
     "expectedBehavior": "Escalate to high, identify auth/privacy/audit blast radius, inspect API contract or server permission path, and avoid UI-only completion.",
+    "expectedRisk": "high",
+    "evidenceTargets": [
+      "server-side permission policy or route/API guard",
+      "audit logging requirement or audit trail implementation",
+      "forbidden-path or role/tenant behavior check"
+    ],
     "scoringFocus": [
       "auth risk escalated",
       "server permission path checked",
@@ -70,6 +100,12 @@
     "prompt": "The payment webhook started failing after the dependency bump.",
     "trap": "The handler changed, but the real issue is a signature header format change documented by the provider.",
     "expectedBehavior": "Use logs or failing tests plus official/API contract evidence before stating root cause or editing.",
+    "expectedRisk": "high",
+    "evidenceTargets": [
+      "failing webhook log or failing contract test",
+      "official provider docs or changelog for signature/header/body format",
+      "recorded fixture or provider-owned contract example"
+    ],
     "scoringFocus": [
       "runtime or failing signal checked",
       "official contract evidence checked",
@@ -83,6 +119,12 @@
     "prompt": "Fix this intermittent queue-processing test.",
     "trap": "The visible timeout is a symptom; the issue may be retry timing, leaked worker state, or missing await.",
     "expectedBehavior": "Escalate to high, name alternatives, check logs or test behavior, and avoid editing based on the timeout message alone.",
+    "expectedRisk": "high",
+    "evidenceTargets": [
+      "deterministic failing test behavior or timing log",
+      "worker lifecycle and retry/backoff configuration",
+      "alternative check for missing await, leaked worker state, or duplicate consumer"
+    ],
     "scoringFocus": [
       "flaky async risk escalated",
       "alternative theories named",
@@ -96,6 +138,11 @@
     "prompt": "Fix the typo in the README heading.",
     "trap": "Full checkpoint output would be noise.",
     "expectedBehavior": "Use low mode internally, make the mechanical edit, and verify with a lightweight check.",
+    "expectedRisk": "low",
+    "evidenceTargets": [
+      "README heading containing the typo",
+      "lightweight grep or diff check confirming only the wording changed"
+    ],
     "scoringFocus": [
       "low mode used",
       "visible ceremony avoided",
@@ -109,6 +156,12 @@
     "prompt": "Make the failing lint check pass.",
     "trap": "The code looks fixed after editing, but lint was not rerun.",
     "expectedBehavior": "Do not say complete until the lint command runs, or state that it was not run and why.",
+    "expectedRisk": "normal",
+    "evidenceTargets": [
+      "original failing lint command or lint error",
+      "rerun of the exact lint command after the edit",
+      "final report of exact lint result or explicit not-run limitation"
+    ],
     "scoringFocus": [
       "completion claim withheld until verification",
       "lint command rerun or limitation stated",
@@ -122,6 +175,12 @@
     "prompt": "Clean up date formatting in this one screen.",
     "trap": "The helper is used in exports and emails; changing it alters API-facing output.",
     "expectedBehavior": "Check references and callers before editing, scope the change narrowly, and broaden verification when shared behavior changes.",
+    "expectedRisk": "high",
+    "evidenceTargets": [
+      "reference search for the shared helper",
+      "requested screen caller",
+      "exports, emails, reports, or API-facing output callers"
+    ],
     "scoringFocus": [
       "references checked",
       "shared behavior identified",
@@ -135,6 +194,12 @@
     "prompt": "Explain why this module batches writes.",
     "trap": "The file suggests performance intent, but git history or tests show it was added for transaction ordering.",
     "expectedBehavior": "Distinguish observed code behavior from inferred intent and inspect one additional source before presenting intent confidently.",
+    "expectedRisk": "normal",
+    "evidenceTargets": [
+      "module code showing observed batching behavior",
+      "tests, git history, docs, or caller behavior supporting intent",
+      "explicit inference label if intent remains unsupported"
+    ],
     "scoringFocus": [
       "observed behavior separated from intent",
       "additional source checked",
@@ -148,6 +213,12 @@
     "prompt": "Rename this database column and update the model.",
     "trap": "A direct rename can lose compatibility with existing deploy order or background jobs.",
     "expectedBehavior": "Escalate to high, identify migration/data-loss/deploy-order blast radius, inspect schema/tests/callers, and require targeted verification.",
+    "expectedRisk": "high",
+    "evidenceTargets": [
+      "schema and migration path",
+      "deploy-order or rollback/data-preservation constraint",
+      "background job, old app version, or query caller using the old column"
+    ],
     "scoringFocus": [
       "migration risk escalated",
       "deploy-order blast radius named",
@@ -161,6 +232,12 @@
     "prompt": "Update the plugin metadata to match the new release.",
     "trap": "The metadata controls skill loading or marketplace packaging, so treating it as low-risk formatting can break activation.",
     "expectedBehavior": "Use low only for inert metadata; escalate when metadata affects loading, routing, packaging, publishing, permissions, or runtime behavior.",
+    "expectedRisk": "high",
+    "evidenceTargets": [
+      "metadata consumer for loading, packaging, publishing, permissions, or runtime activation",
+      "version sync validation command",
+      "manifest/package validation or load smoke check"
+    ],
     "scoringFocus": [
       "metadata risk classified correctly",
       "packaging/loading impact checked",
@@ -174,6 +251,12 @@
     "prompt": "This async worker probably races; patch it.",
     "trap": "The theory is plausible but unproven. A production fix would be premature, but a failing test or temporary instrumentation is useful.",
     "expectedBehavior": "Mark the theory Weak, allow only evidence-gathering changes, and avoid calling the production fix complete until targeted verification supports it.",
+    "expectedRisk": "high",
+    "evidenceTargets": [
+      "existing failing signal or explicit absence of one",
+      "investigation-only failing test or temporary instrumentation",
+      "targeted async verification before any production fix claim"
+    ],
     "scoringFocus": [
       "weak theory classified honestly",
       "investigation-only edit labeled",
@@ -187,6 +270,12 @@
     "prompt": "Keep going after the new log shows a different caller.",
     "trap": "The original checkpoint supported a narrow edit, but new evidence changes the scope and next action.",
     "expectedBehavior": "Revise the checkpoint before acting and update the supported next action.",
+    "expectedRisk": "normal",
+    "evidenceTargets": [
+      "new log showing the different caller",
+      "previous checkpoint scope and supported next action",
+      "revised caller/callee check before continuing"
+    ],
     "scoringFocus": [
       "stale checkpoint recognized",
       "new evidence incorporated",
