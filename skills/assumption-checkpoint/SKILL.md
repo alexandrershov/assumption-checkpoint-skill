@@ -84,6 +84,8 @@ Fast path order:
 4. Act only within the supported scope.
 5. Verify the locked outcome or state the exact verification limit.
 
+Precedence: choose the level from risk first, then the form. Brevity never overrides the risk floor. If the task hits any `high` trigger or a Domain Evidence Card, naming the specific artifact wins over the fast path and over the `low` and `normal` forms. Compress the wording, never the required evidence.
+
 ## Anti-Ritual Guard
 
 A checkpoint fails its purpose when any of these are true:
