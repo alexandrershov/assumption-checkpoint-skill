@@ -6,6 +6,7 @@
 - Expanded domain evidence cards for alternate cache invalidation, provider-owned API contract evidence, UI viewports, shared helper output surfaces, and loading/package metadata.
 - Added concrete bad/good examples for UI, external API, shared helper, and metadata evidence targets.
 - Extended eval scenario validation with expected risk levels and concrete evidence targets.
+- Added an explicit precedence rule so checkpoint brevity never overrides the risk floor: any `high` trigger or Domain Evidence Card still requires naming the specific artifact, even in the fast path or `low`/`normal` forms. Mirrored into the Cursor rule.
 
 # Release 0.4.0 - 2026-05-13
 

@@ -31,6 +31,8 @@ A checkpoint must authorize what to inspect, edit, leave alone, ask, or verify n
 
 For routine normal work, keep the checkpoint internal and compact: assumption, evidence checked, supported next action, and next verification.
 
+Choose the level from risk first, then the form. Brevity never overrides the risk floor: if the task hits any high trigger or a Domain Evidence Card, naming the specific artifact wins over the compact form.
+
 A checkpoint fails when evidence is vague, the next action only repeats the assumption, `Strong enough` relies only on naming/local shape/one file, verification is vague despite a narrower check, or user-visible ceremony does not affect trust, risk, scope, expectations, verification limits, or a user decision.
 
 When it fails, check one independent source, narrow the claim, ask for missing intent, or drop the confident action.
